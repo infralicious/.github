@@ -1,0 +1,10 @@
+# Override for actions-checkout. Only identity fields live here.
+# All other fields come from the baseline in settings.yml.
+repository:
+  name: actions-checkout
+  description: Checkout action with persist-credentials false by default, pinned to actions/checkout
+  private: false
+  topics:
+    - checkout
+    - github-actions
+    - security

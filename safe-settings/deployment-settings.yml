@@ -1,0 +1,7 @@
+# Repos safe-settings must never touch, even if the App is installed there.
+# Docs stays out on purpose. It is an old repo. Leave it alone.
+restrictedRepos:
+  - .github
+  - admin
+  - safe-settings
+  - docs

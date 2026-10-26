@@ -1,0 +1,4 @@
+# Notification only. The sole maintainer cannot approve their own pull request.
+# Do not set a required approver count. That count would stall every merge.
+safe-settings/** @nitrocode
+.github/workflows/** @nitrocode

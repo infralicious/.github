@@ -1,0 +1,22 @@
+# Public repos only. Branch rules work on the free plan for public repos.
+# This suborg adds branch rules to the org baseline.
+# The org baseline has no branch rules.
+# That split keeps private repos out of branch rule failures.
+# Phase 1 scope only, chosen 2026-10-26.
+# Phase 1 covers infralicious.github.io and actions-checkout.
+# Branches apply only when the App is installed on a repo.
+# Install the App on a repo before you expect a sync for it.
+# Future phase 2 repos, not active yet:
+# awesome-service-control-policies, saas-auth-wall-of-shame,
+# terraform-aws-securityhub-batchupdatefindings, renovate-config.
+# Add those repos here only when phase 2 starts.
+suborgrepos:
+  - infralicious.github.io
+  - actions-checkout
+branches:
+  - name: main
+    protection:
+      required_status_checks: null
+      enforce_admins: false
+      required_pull_request_reviews: null
+      restrictions: null

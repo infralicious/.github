@@ -1,0 +1,8 @@
+# Override for service-control-policies. Only identity fields live here.
+# All other fields come from the baseline and the private suborg.
+# Private stays true on purpose.
+# That setting lets sync revert an accidental public flip.
+repository:
+  name: service-control-policies
+  description: service-control-policies or SCPs
+  private: true

@@ -1,0 +1,8 @@
+# Private repos only. This suborg has no branch rules on purpose.
+# Branch protection fails on private repos on the free plan.
+# The API returns 403 for branch protection on private free repos.
+# This suborg still gets the org baseline: repo settings and labels.
+# It does not get branch rules.
+# Add a private repo here only after a dry run passes for it.
+suborgrepos:
+  - service-control-policies

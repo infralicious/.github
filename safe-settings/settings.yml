@@ -1,0 +1,60 @@
+# Baseline for all managed repos in infralicious.
+# Safe-settings merges this file with suborg files and repo files.
+# Repo files win on conflict. Suborg files sit in between.
+# Identity fields stay out of this file on purpose.
+# Name, description, homepage, private, and topics live in repos/*.yml.
+# That choice stops the baseline from wiping a repo identity.
+# Branch rules stay out of this file on purpose.
+# Branch rules live in suborgs/public.yml only.
+# A suborg file cannot strip a rule set at the org level.
+# Private repos would then fail every sync with a 403 error.
+# Labels: keep this list complete for the baseline.
+# A repo that adds a custom label must list its full label set.
+# That repo file must list every label, or sync may remove the custom label.
+# Default branch: all managed repos use main today.
+# Safe-settings renames the default branch when the config differs.
+# Do not set a different default branch here without a plan.
+repository:
+  has_issues: true
+  has_projects: true
+  has_wiki: false
+  default_branch: main
+  allow_squash_merge: true
+  allow_merge_commit: true
+  allow_rebase_merge: true
+  delete_branch_on_merge: true
+  security:
+    enableVulnerabilityAlerts: true
+    enableAutomatedSecurityFixes: false
+  web_commit_signoff_required: false
+labels:
+  - name: bug
+    color: d73a4a
+    description: Something isn't working
+  - name: documentation
+    color: "0075ca"
+    description: Improvements or additions to documentation
+  - name: duplicate
+    color: cfd3d7
+    description: This issue or pull request already exists
+  - name: enhancement
+    color: a2eeef
+    description: New feature or request
+  - name: good first issue
+    color: 7057ff
+    description: Good for newcomers
+  - name: help wanted
+    color: "008672"
+    description: Extra attention is needed
+  - name: invalid
+    color: e4e669
+    description: This doesn't seem right
+  - name: question
+    color: d876e3
+    description: Further information is requested
+  - name: wontfix
+    color: ffffff
+    description: This will not be worked on
+  - name: dependencies
+    color: "0366d6"
+    description: Pull requests that update a dependency file

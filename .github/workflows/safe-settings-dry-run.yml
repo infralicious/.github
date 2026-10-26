@@ -1,0 +1,39 @@
+name: Safe Settings Dry Run
+on:
+  pull_request:
+    branches: [main]
+    paths: ["safe-settings/**"]
+concurrency:
+  group: safe-settings-dry-run
+  cancel-in-progress: false
+jobs:
+  safeSettingsDryRun:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      SAFE_SETTINGS_CODE_DIR: ${{ github.workspace }}/.safe-settings-code
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout v4
+        with:
+          repository: github-community-projects/safe-settings
+          ref: ff7a65655d33006b9820479df0a9e1057a8927e4 # safe-settings 2.1.17
+          path: ${{ env.SAFE_SETTINGS_CODE_DIR }}
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # actions/setup-node v4
+        with:
+          node-version: "22"
+      - run: npm ci
+        working-directory: ${{ env.SAFE_SETTINGS_CODE_DIR }}
+      - run: npm run full-sync
+        working-directory: ${{ env.SAFE_SETTINGS_CODE_DIR }}
+        env:
+          FULL_SYNC_NOP: "true"
+          GH_ORG: ${{ vars.SAFE_SETTINGS_GH_ORG }}
+          APP_ID: ${{ vars.SAFE_SETTINGS_APP_ID }}
+          PRIVATE_KEY: ${{ secrets.SAFE_SETTINGS_PRIVATE_KEY }}
+          GITHUB_CLIENT_ID: ${{ vars.SAFE_SETTINGS_GITHUB_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.SAFE_SETTINGS_GITHUB_CLIENT_SECRET }}
+          ADMIN_REPO: .github
+          CONFIG_PATH: safe-settings
+          DEPLOYMENT_CONFIG_FILE: ${{ github.workspace }}/safe-settings/deployment-settings.yml

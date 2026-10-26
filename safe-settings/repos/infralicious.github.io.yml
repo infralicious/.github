@@ -1,0 +1,11 @@
+# Override for infralicious.github.io. Only identity fields live here.
+# All other fields come from the baseline in settings.yml.
+repository:
+  name: infralicious.github.io
+  description: Infralicious website and TrueTime docs
+  homepage: https://infralicious.com/
+  private: false
+  topics:
+    - jekyll
+    - github-pages
+    - documentation
