@@ -63,8 +63,8 @@ Fork pull requests get no secrets, so the dry run fails for forks.
 ## Supply chain pins
 
 The workflows pin safe-settings to a full SHA.
-That SHA is `ff7a65655d33006b9820479df0a9e1057a8927e4`.
-That SHA matches tag `2.1.17` in both safe-settings repos.
+That SHA is `a9a1f366ad6a738b55682d346d94f8d6c4893b09`.
+That SHA matches tag `3.0.0` in both safe-settings repos. Version 2.1.17 failed dry runs with a NOP reporting crash, fixed in 3.0.0.
 The tag exists in `github/safe-settings` and in `github-community-projects/safe-settings`.
 The workflows check out the community repo.
 The workflows pin actions to full SHAs, with version comments.
