@@ -54,8 +54,11 @@ Use a pull request for config changes.
 
 The dry run workflow runs on pull requests.
 It runs only for changes under `safe-settings/`.
-It sets `FULL_SYNC_NOP=true`.
+It sets `FULL_SYNC_NOP=true` and `LOG_LEVEL=info`.
 It previews changes, and it makes no changes.
+The info log shows the planned change summary.
+Debug log level would also show full diffs for private repos.
+Do not use debug in this public repo.
 Require a green dry run before a merge.
 Use branches in this repo for pull requests.
 Fork pull requests get no secrets, so the dry run fails for forks.
@@ -76,7 +79,7 @@ The safe-settings repo has a lockfile, so `npm ci` works.
 ## Secrets and vars
 
 Create a GitHub App under the infralicious org.
-Install the App only on repos in scope.
+Install the App on all org repos, as decided 2026-10-27.
 Set `GH_ORG` to `infralicious`.
 Set `APP_ID` and `GITHUB_CLIENT_ID` as vars.
 Set `PRIVATE_KEY` and `GITHUB_CLIENT_SECRET` as secrets.
@@ -87,9 +90,11 @@ Never commit a client secret.
 
 Safe-settings does not manage this repo.
 Restricted repos include `.github`, so sync skips it.
-Set main protection for this repo by hand.
+Set main protection for this repo by hand, before a merge.
 Block force pushes and branch deletion.
-Require the dry run check.
+Require the dry run check, named Safe Settings Dry Run.
+That check does not need a human approver.
+Admin protection is still unset as of 2026-10-27.
 Use pull requests for config changes.
 Do not set a required approver count.
 The sole maintainer cannot approve their own pull request.
@@ -108,25 +113,40 @@ A config change still syncs on manual dispatch.
 
 ## Scope and expansion
 
-Phase 1 covers two repos: `infralicious.github.io` and `actions-checkout`.
+Baseline applies to all installed repos, as decided 2026-10-27.
+Baseline covers repo settings, labels, and Dependabot alerts.
+Branch rules cover only `infralicious.github.io` and `actions-checkout`.
 The public suborg lists those two repos only.
-Branches apply only when the App is installed on a repo.
-Install the App on a public repo to add it to scope.
-Add that repo to the public suborg at the same time.
+Other public repos get baseline only, with no branch rules yet.
+Add a repo to the public suborg to add branch rules for it.
 Run a dry run before a live sync for that repo.
-Phase 2 changes wiki and branch deletion for three public repos.
-Those repos now have wiki on and deletion off.
-Approve those changes before you expand scope.
+Live sync changes wiki off and deletion on for three public repos.
+Those repos are awesome-service-control-policies, saas-auth-wall-of-shame, and renovate-config.
+Live sync also changes deletion on for service-control-policies.
 Private scope covers `service-control-policies` only.
-Test the private suborg in a dry run first.
 Private branch rules stay out, even after that test.
+
+## Renovate and Dependabot
+
+Renovate is the primary updater where it runs.
+Renovate dashboards exist for actions-checkout, infralicious.github.io, and terraform-aws-securityhub-batchupdatefindings.
+Dependabot alerts are on in the baseline.
+Dependabot auto-fix is off in the baseline.
+Auto-fix off stops duplicate pull requests with Renovate.
+Repos without Renovate need a manual fix for an alert.
+Most non-Renovate repos hold markdown only, so alert volume should stay low.
+Shared Renovate config in renovate-config does not apply to target repos.
+Target repos extend best-practices only, or use no Renovate config.
+Do not enable auto-fix globally to fix the non-Renovate gap.
+That change would duplicate Renovate pull requests in Renovate repos.
 
 ## Retire the probot Settings app
 
-Create the App, and install it on phase 1 repos only.
+Create the App, and install it on all org repos.
 Add vars and secrets to this repo.
 Run a dry run, and check the preview.
-Run a live sync, and verify both repos.
-Uninstall the probot Settings app.
+Uninstall the probot Settings app before live sync.
+Probot could revert safe-settings changes on a target repo push.
+Run a live sync, and verify all non-restricted repos.
 Delete the old per-repo `.github/settings.yml` files.
 Delete those files only after a live sync verifies.

@@ -26,6 +26,10 @@ repository:
   security:
     enableVulnerabilityAlerts: true
     enableAutomatedSecurityFixes: false
+# Dependabot alerts on, auto-fix off on purpose.
+# Renovate is the primary updater where it runs.
+# Auto-fix on would duplicate Renovate pull requests.
+# Repos without Renovate need a manual fix for an alert.
   web_commit_signoff_required: false
 labels:
   - name: bug
