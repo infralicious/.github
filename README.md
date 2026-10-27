@@ -63,7 +63,11 @@ It previews changes, and it makes no changes.
 The info log shows the planned change summary.
 Debug log level would also show full diffs for private repos.
 Do not use debug in this public repo.
-Require a green dry run before a merge.
+Dry run limit, found 2026-10-27: full-sync loads config from main.
+It does not load config from the pull request branch.
+A green dry run proves main config syncs cleanly, not PR config.
+Live sync after merge is the real verification for a config change.
+Require a green dry run before a merge, and verify live after merge.
 Use branches in this repo for pull requests.
 Fork pull requests get no secrets, so the dry run fails for forks.
 
