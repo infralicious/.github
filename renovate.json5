@@ -1,0 +1,46 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:best-practices"],
+  // Renovate runs before 3am on Monday, Chicago time.
+  // One grouped PR per wave keeps review cost low.
+  "schedule": ["before 3am on Monday"],
+  "timezone": "America/Chicago",
+  "labels": ["dependencies"],
+  // Pin action refs to full SHA, not moving tags.
+  "pinDigests": true,
+  "packageRules": [
+    {
+      // Group GitHub Actions updates in one PR.
+      "groupName": "GitHub Actions updates",
+      "matchManagers": ["github-actions"]
+    },
+    {
+      // Safe-settings is a critical settings enforcer, never automerge it.
+      // A new safe-settings version needs a dry run, a live sync, and live verification.
+      // Renovate PR for safe-settings must be merged by hand, after those checks.
+      "matchDepNames": ["github-community-projects/safe-settings"],
+      "automerge": false
+    }
+  ],
+  // Custom regex manager for safe-settings, reused for any version.
+  // Safe-settings is not a GitHub Action, it is a repo checkout with a ref SHA.
+  // Renovate github-actions manager ignores that ref, so a regex manager is needed.
+  // Pattern: a renovate annotation comment, right before the ref line, in both workflows.
+  // Annotation: # renovate: datasource=github-tags depName=github-community-projects/safe-settings
+  // Ref line: ref: <40-char SHA> # safe-settings <version>
+  // Renovate reads version from the comment after ref, and digest from the SHA before it.
+  // When a new tag appears, Renovate updates both the version and the SHA, in both workflows, in one PR.
+  // Tags in safe-settings are bare semver, like 3.0.0, with no v prefix.
+  // Stable tags only are proposed, because current version is stable.
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": ["/\\.github\\/workflows\\/safe-settings-.*\\.yml$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\n\\s*ref: (?<currentDigest>[a-f0-9]{40}) # safe-settings (?<currentValue>.*)"
+      ],
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver"
+    }
+  ]
+}
