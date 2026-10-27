@@ -29,11 +29,15 @@ That fact forced branch rules out of the org baseline.
 ## What syncs, and what does not sync
 
 The sync covers repo settings, branch rules for public repos, and labels.
+Labels run in additive mode, so custom labels added in the UI stay.
 It does not cover teams, collaborators, or environments.
 It does not cover Actions permissions.
 It does not cover immutable releases.
-It does not cover tag rulesets yet.
-Actions-checkout needs those steps by hand.
+It does not cover rulesets, by hand or by safe-settings.
+Actions-checkout has a manual Tag protection ruleset, for tags v*.
+Terraform has a manual Default branch ruleset.
+Safe-settings ruleset sync would delete rulesets not listed in YAML.
+Keep those manual rulesets untouched, until they are imported exactly.
 Immutable releases are already on for actions-checkout.
 Safe-settings does not manage that switch.
 Keep that switch on by hand.
@@ -92,9 +96,9 @@ Safe-settings does not manage this repo.
 Restricted repos include `.github`, so sync skips it.
 Set main protection for this repo by hand, before a merge.
 Block force pushes and branch deletion.
-Require the dry run check, named Safe Settings Dry Run.
+Require the dry run check, named safeSettingsDryRun.
 That check does not need a human approver.
-Admin protection is still unset as of 2026-10-27.
+Admin protection is set as of 2026-10-27, with 0 approvers.
 Use pull requests for config changes.
 Do not set a required approver count.
 The sole maintainer cannot approve their own pull request.
@@ -115,16 +119,13 @@ A config change still syncs on manual dispatch.
 
 Baseline applies to all installed repos, as decided 2026-10-27.
 Baseline covers repo settings, labels, and Dependabot alerts.
-Branch rules cover only `infralicious.github.io` and `actions-checkout`.
-The public suborg lists those two repos only.
-Other public repos get baseline only, with no branch rules yet.
-Add a repo to the public suborg to add branch rules for it.
-Run a dry run before a live sync for that repo.
-Live sync changes wiki off and deletion on for three public repos.
-Those repos are awesome-service-control-policies, saas-auth-wall-of-shame, and renovate-config.
-Live sync also changes deletion on for service-control-policies.
+Branch rules cover all six public repos, expanded 2026-10-27.
+Branch rules stay weak: no required reviews, no required checks.
 Private scope covers `service-control-policies` only.
-Private branch rules stay out, even after that test.
+Private branch rules stay out, free plan returns 403.
+Unused features are commented out in the config files.
+Each commented key says what it does, and why it is unused here.
+Add a feature only when its reason no longer holds, with a dry run first.
 
 ## Renovate and Dependabot
 
@@ -142,11 +143,7 @@ That change would duplicate Renovate pull requests in Renovate repos.
 
 ## Retire the probot Settings app
 
-Create the App, and install it on all org repos.
-Add vars and secrets to this repo.
-Run a dry run, and check the preview.
-Uninstall the probot Settings app before live sync.
-Probot could revert safe-settings changes on a target repo push.
-Run a live sync, and verify all non-restricted repos.
-Delete the old per-repo `.github/settings.yml` files.
-Delete those files only after a live sync verifies.
+Probot is uninstalled, as of 2026-10-27.
+Old per-repo `.github/settings.yml` files are deleted, as of 2026-10-27.
+Safe-settings is now the only settings enforcer.
+Probot retirement is done, do not reinstall probot.

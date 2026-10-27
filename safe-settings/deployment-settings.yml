@@ -5,3 +5,15 @@ restrictedRepos:
   - admin
   - safe-settings
   - docs
+
+# Restricted repo patterns, commented out on purpose.
+# Exact repo names above are clearer for eight repos, glob patterns add no value here.
+# restrictedRepos with include and exclude lists is also unused for the same reason.
+# configvalidators, commented out on purpose.
+# No collaborators or teams are managed here, so a validator for those plugins would never run.
+# A validator script is code in YAML, and a bad script would block every sync, add one only when a plugin needs a guard.
+# overridevalidators, commented out on purpose.
+# Branch gates are null at baseline, so a rule that an override cannot lower a gate has no gate to protect.
+# Add an override validator only when a baseline gate exists and an override must not lower it.
+# disable_plugins, commented out on purpose.
+# Every enabled plugin is wanted, disabling a plugin would hide a config section silently.

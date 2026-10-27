@@ -31,6 +31,23 @@ repository:
 # Auto-fix on would duplicate Renovate pull requests.
 # Repos without Renovate need a manual fix for an alert.
   web_commit_signoff_required: false
+  allow_auto_merge: false
+  allow_update_branch: false
+  has_discussions: false
+  is_template: false
+# Repository fields below are commented out on purpose, not missing.
+# name: set only in repos/*.yml, never in baseline, or baseline would wipe identity.
+# description: set only in repos/*.yml, same reason as name.
+# homepage: set only in repos/*.yml for the site, same reason as name.
+# private: set only in repos/*.yml, baseline must not flip a repo public or private.
+# topics: set only in repos/*.yml, baseline must not wipe topics.
+# visibility: unused, private flag already covers public and private, internal needs Enterprise.
+# gitignore_template: unused, only applies when a repo is created, all repos already exist.
+# license_template: unused, only applies when a repo is created, all repos already exist.
+# auto_init: unused, only applies when a repo is created, all repos already exist.
+# archived: unused on purpose, absent means archive state stays unchanged, false would unarchive a repo archived on purpose later.
+# force_create: unused on purpose, creating repos from YAML is high risk, create repos by hand.
+# template: unused, only applies with force_create, no template repos are used here.
 labels:
   - name: bug
     color: d73a4a
@@ -62,3 +79,82 @@ labels:
   - name: dependencies
     color: "0366d6"
     description: Pull requests that update a dependency file
+
+# Additive labels, enabled 2026-10-27.
+# Labels plugin only adds and updates labels, it never deletes a label not listed here.
+# A custom label added in the GitHub UI stays, even if it is not in the list above.
+additive_plugins:
+  - labels
+
+# Teams, commented out on purpose.
+# Org has no teams today, and the user is the sole maintainer.
+# Adding a team here would grant repo access, so add a team only when a team exists.
+# teams:
+#   - name: core
+#     permission: admin
+#     include:
+#       - actions-checkout
+
+# Collaborators, commented out on purpose.
+# No outside collaborators exist today, only nitrocode on the main repos.
+# Adding a collaborator here would grant repo access, so add one only when needed.
+# collaborators:
+#   - username: example-user
+#     permission: pull
+
+# Environments, commented out on purpose.
+# Site repo has only a github-pages environment, and GitHub Pages manages that environment.
+# No staging or production environment exists, and no deployment reviewers are needed.
+# environments:
+#   - name: production
+#     wait_timer: 0
+#     prevent_self_review: false
+
+# Repository variables, commented out on purpose.
+# No repo variables are in use today, in any org repo.
+# Variables are not secrets, safe-settings never manages secrets, add a variable only when a workflow needs one.
+# variables:
+#   - name: EXAMPLE_VAR
+#     value: example
+
+# Milestones, commented out on purpose.
+# No milestones are in use today, in any org repo.
+# milestones:
+#   - title: example-milestone
+#     description: Example milestone
+#     state: open
+
+# Autolinks, commented out on purpose.
+# No autolink keys are in use today, in any org repo.
+# autolinks:
+#   - key_prefix: "JIRA-"
+#     url_template: "https://example.atlassian.net/browse/JIRA-<num>"
+#     is_alphanumeric: false
+
+# Custom properties, commented out on purpose.
+# Org has no custom properties defined today, so no values can be set here.
+# A property must exist in the org first, then a value can be set per repo.
+# custom_properties:
+#   - name: example-property
+#     value: example
+
+# Custom repository roles, commented out on purpose.
+# Org has no custom roles today, only built-in read, triage, write, maintain, admin.
+# custom_repository_roles:
+#   - name: example-role
+#     base_role: read
+
+# Repository name validator, commented out on purpose.
+# All current repo names already match a simple pattern, and no repos are created by safe-settings.
+# A validator would only add a failure mode for a new repo, add it only when repo creation starts.
+# validator:
+#   pattern: "[a-zA-Z0-9_.-]+"
+
+# Rulesets, commented out on purpose, see public suborg and actions-checkout repo file for the reason.
+# Ruleset sync in normal mode deletes rulesets not listed here.
+# Manual rulesets already exist: Tag protection on actions-checkout, Default branch ruleset on terraform.
+# Do not enable rulesets here until those manual rulesets are imported into YAML exactly.
+# rulesets:
+#   - name: example-ruleset
+#     target: branch
+#     enforcement: active
