@@ -6,3 +6,17 @@
 # Add a private repo here only after a dry run passes for it.
 suborgrepos:
   - service-control-policies
+
+# Branches, commented out on purpose, not missing.
+# Branch protection fails on private repos on the free plan, the API returns 403.
+# Keep this suborg without branch rules, even if more private repos are added.
+# branches:
+#   - name: main
+#     protection:
+#       required_status_checks: null
+#       enforce_admins: false
+#       required_pull_request_reviews: null
+#       restrictions: null
+# Suborg grouping keys, commented out on purpose.
+# suborgteams: unused, org has no teams today.
+# suborgproperties: unused, org has no custom properties today.

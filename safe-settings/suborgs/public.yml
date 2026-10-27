@@ -2,23 +2,38 @@
 # This suborg adds branch rules to the org baseline.
 # The org baseline has no branch rules.
 # That split keeps private repos out of branch rule failures.
-# Branch rules only, chosen 2026-10-26.
-# Branch rules cover infralicious.github.io and actions-checkout only.
-# Baseline repo settings, labels, and alerts apply to all installed repos.
-# Other public repos get baseline only, with no branch rules yet.
+# Branch rules for all six public repos, expanded 2026-10-27.
+# Branch rules use the same weak settings as before: no required reviews, no required checks.
+# That choice keeps friction low for the sole maintainer, and still blocks force push and deletion.
+# Baseline repo settings, labels, and alerts still apply to all installed repos.
 # Branches apply only when the App is installed on a repo.
-# Install the App on a repo before you expect a sync for it.
-# Future phase 2 repos, not active yet:
-# awesome-service-control-policies, saas-auth-wall-of-shame,
-# terraform-aws-securityhub-batchupdatefindings, renovate-config.
-# Add those repos here only when phase 2 starts.
 suborgrepos:
   - infralicious.github.io
   - actions-checkout
+  - awesome-service-control-policies
+  - saas-auth-wall-of-shame
+  - terraform-aws-securityhub-batchupdatefindings
+  - renovate-config
+# Suborg grouping keys below are commented out on purpose, not missing.
+# suborgteams: unused, org has no teams today, so no team can select repos for this suborg.
+# suborgproperties: unused, org has no custom properties today, so no property can select repos.
+# Glob patterns in suborgrepos: unused on purpose, exact repo names are clearer for eight repos.
 branches:
   - name: main
     protection:
+      # Required checks are null on purpose, sole maintainer, no required workflow exists for target repos.
+      # Required reviews are null on purpose, sole maintainer cannot approve their own pull request.
+      # Restrictions are null on purpose, no team or user restriction is needed today.
       required_status_checks: null
       enforce_admins: false
       required_pull_request_reviews: null
       restrictions: null
+# Rulesets, commented out on purpose, not missing.
+# Manual rulesets already exist and must not be deleted by a normal ruleset sync.
+# Actions-checkout has Tag protection for tags v*, terraform has a Default branch ruleset.
+# Branch protection above already blocks force push and deletion for main, so a new branch ruleset adds no value today.
+# Import the manual rulesets into YAML exactly before enabling rulesets here.
+# rulesets:
+#   - name: Protect main branch
+#     target: branch
+#     enforcement: active

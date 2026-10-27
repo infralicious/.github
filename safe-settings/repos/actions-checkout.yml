@@ -8,3 +8,7 @@ repository:
     - checkout
     - github-actions
     - security
+# Rulesets, commented out on purpose for this repo.
+# This repo already has a manual Tag protection ruleset for tags v*, with deletion, non-fast-forward, and update rules.
+# Safe-settings ruleset sync in normal mode would delete that ruleset if it is not listed in YAML.
+# Do not enable rulesets for this repo until that manual ruleset is imported into YAML exactly.
