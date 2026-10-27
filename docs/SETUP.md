@@ -69,7 +69,8 @@ CODEOWNERS gives notification only, it does not approve.
 
 Open a pull request from a branch, never push to main directly.
 Change only a comment in `safe-settings/` to trigger a dry run.
-Dry run workflow runs on pull requests, for `safe-settings/**` only.
+Dry run workflow runs on every pull request to main.
+Validation workflow runs on every pull request to main.
 Dry run sets `FULL_SYNC_NOP=true` and `LOG_LEVEL=info`.
 Dry run makes no live changes, it only previews.
 Read the dry run log with care, see the limit below.
@@ -90,16 +91,7 @@ Check wiki, delete on merge, labels, topics, and branch protection.
 Check that restricted repos are unchanged, by API.
 Restricted repos today are `.github`, `admin`, `safe-settings`, `docs`.
 
-## Step 8: Retire the old settings app, if any
-
-Uninstall the old probot Settings app only after a live sync verifies.
-Uninstall needs the web UI, API cannot uninstall an App for you.
-Delete old per-repo `.github/settings.yml` files only after that check.
-Delete each file in its own signed commit, then push.
-Verify each file returns 404 on GitHub, after deletion.
-Do not reinstall the old app, safe-settings is now the only enforcer.
-
-## Step 9: Connect Renovate
+## Step 8: Connect Renovate
 
 Add `renovate.json5` to the admin repo, if it is not there yet.
 Verify Renovate is installed on the admin repo, in org settings.
@@ -109,8 +101,9 @@ Renovate groups GitHub Actions updates in one PR.
 Renovate updates safe-settings in its own PR, never automerged.
 Merge a safe-settings Renovate PR only after a live sync check.
 See `docs/ARCHITECTURE.md` for the version pin design.
+See `docs/RULESETS-MIGRATION.md` for the ruleset plan.
 
-## Step 10: Keep it running
+## Step 9: Keep it running
 
 Check scheduled sync runs each month.
 GitHub disables schedules after 60 days with no repo activity.
