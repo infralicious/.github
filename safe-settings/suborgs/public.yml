@@ -2,8 +2,10 @@
 # This suborg adds branch rules to the org baseline.
 # The org baseline has no branch rules.
 # That split keeps private repos out of branch rule failures.
-# Phase 1 scope only, chosen 2026-10-26.
-# Phase 1 covers infralicious.github.io and actions-checkout.
+# Branch rules only, chosen 2026-10-26.
+# Branch rules cover infralicious.github.io and actions-checkout only.
+# Baseline repo settings, labels, and alerts apply to all installed repos.
+# Other public repos get baseline only, with no branch rules yet.
 # Branches apply only when the App is installed on a repo.
 # Install the App on a repo before you expect a sync for it.
 # Future phase 2 repos, not active yet:
