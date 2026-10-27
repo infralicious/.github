@@ -28,6 +28,7 @@ jobs:
       - run: npm run full-sync
         working-directory: ${{ env.SAFE_SETTINGS_CODE_DIR }}
         env:
+          LOG_LEVEL: debug
           FULL_SYNC_NOP: "true"
           GH_ORG: ${{ vars.SAFE_SETTINGS_GH_ORG }}
           APP_ID: ${{ vars.SAFE_SETTINGS_APP_ID }}
