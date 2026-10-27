@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout v4
         with:
           repository: github-community-projects/safe-settings
-          ref: ff7a65655d33006b9820479df0a9e1057a8927e4 # safe-settings 2.1.17
+          ref: a9a1f366ad6a738b55682d346d94f8d6c4893b09 # safe-settings 3.0.0
           path: ${{ env.SAFE_SETTINGS_CODE_DIR }}
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # actions/setup-node v4
         with:
