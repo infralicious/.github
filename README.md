@@ -4,6 +4,10 @@ This repo holds the safe-settings config for the infralicious org.
 It does not hold app code.
 It holds repo settings as code only.
 
+Repeat this setup from scratch with `docs/SETUP.md`.
+Understand the parts and the flow with `docs/ARCHITECTURE.md`.
+Start with those docs, before you copy this repo to a new org.
+
 ## How the config fits together
 
 Safe-settings merges three layers for each repo.
@@ -79,7 +83,15 @@ That SHA matches tag `3.0.0` in both safe-settings repos. Version 2.1.17 failed 
 The tag exists in `github/safe-settings` and in `github-community-projects/safe-settings`.
 The workflows check out the community repo.
 The workflows pin actions to full SHAs, with version comments.
-Renovate should update those SHAs.
+Renovate github-actions manager updates those action SHAs.
+Safe-settings version is defined in both workflow files, by SHA.
+Safe-settings is not an Action, so github-actions manager ignores it.
+Renovate updates safe-settings by a custom regex manager, in `renovate.json5`.
+That manager uses a comment, right before the ref line, in both workflows.
+Comment: `# renovate: datasource=github-tags depName=github-community-projects/safe-settings`.
+Ref line: `ref: <SHA> # safe-settings <version>`.
+Renovate updates version and SHA together, in one PR, for any version.
+Renovate never automerges safe-settings, by package rule.
 The workflows pin Node to version 22.
 The workflows use `npm ci`, not `npm install`.
 The safe-settings repo has a lockfile, so `npm ci` works.
@@ -134,6 +146,13 @@ Add a feature only when its reason no longer holds, with a dry run first.
 ## Renovate and Dependabot
 
 Renovate is the primary updater where it runs.
+Admin repo Renovate config lives in `renovate.json5`, at the repo root.
+Admin Renovate runs before 3am on Monday, Chicago time.
+Admin Renovate groups GitHub Actions updates in one PR.
+Admin Renovate updates safe-settings in its own PR, never automerged.
+Verify Renovate is installed on the admin repo, in org settings.
+A config file alone does nothing, if the App is not installed there.
+That install check is still open, as of this pull request.
 Renovate dashboards exist for actions-checkout, infralicious.github.io, and terraform-aws-securityhub-batchupdatefindings.
 Dependabot alerts are on in the baseline.
 Dependabot auto-fix is off in the baseline.
