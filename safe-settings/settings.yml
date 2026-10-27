@@ -1,3 +1,4 @@
+# Dry-run test only. No config change. This PR closes without merge.
 # Baseline for all managed repos in infralicious.
 # Safe-settings merges this file with suborg files and repo files.
 # Repo files win on conflict. Suborg files sit in between.
