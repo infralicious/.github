@@ -2,7 +2,10 @@ name: Safe Settings Dry Run
 on:
   pull_request:
     branches: [main]
-    paths: ["safe-settings/**"]
+# No paths filter on purpose, every PR to main gets a dry run check.
+# A paths filter left docs and workflow PRs with no required check.
+# That blocked merges, and forced an admin merge for PR 3.
+# Dry run is NOP mode, it makes no live changes, so it is safe for all PRs.
 concurrency:
   group: safe-settings-dry-run
   cancel-in-progress: false

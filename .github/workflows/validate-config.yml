@@ -1,0 +1,37 @@
+name: Validate Config
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  validateConfig:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout v4
+      - name: Parse YAML and Renovate config
+        run: |
+          python3 - << 'PY'
+          import glob, json, re, sys
+          import yaml
+          for path in sorted(glob.glob("safe-settings/**/*.yml", recursive=True) + glob.glob(".github/workflows/*.yml")):
+              yaml.safe_load(open(path))
+              print(f"YAML OK: {path}")
+          text = open("renovate.json5").read()
+          lines = [line for line in text.splitlines() if not line.strip().startswith("//")]
+          json.loads("\n".join(lines))
+          print("Renovate config OK: renovate.json5")
+          # Safe-settings version must match in both workflows
+          pattern = r"ref: ([a-f0-9]{40}) # safe-settings (.*)"
+          refs = {}
+          for path in [".github/workflows/safe-settings-sync.yml", ".github/workflows/safe-settings-dry-run.yml"]:
+              match = re.search(pattern, open(path).read())
+              if not match:
+                  sys.exit(f"Missing safe-settings ref in {path}")
+              refs[path] = (match.group(1), match.group(2))
+              print(f"Safe-settings pin OK: {path} {match.group(2)} {match.group(1)}")
+          values = set(refs.values())
+          if len(values) != 1:
+              sys.exit(f"Safe-settings pins differ: {refs}")
+          print("Safe-settings pins match in both workflows")
+          PY

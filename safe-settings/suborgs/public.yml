@@ -33,6 +33,7 @@ branches:
 # Actions-checkout has Tag protection for tags v*, terraform has a Default branch ruleset.
 # Branch protection above already blocks force push and deletion for main, so a new branch ruleset adds no value today.
 # Import the manual rulesets into YAML exactly before enabling rulesets here.
+# See docs/RULESETS-MIGRATION.md for the full migration plan.
 # rulesets:
 #   - name: Protect main branch
 #     target: branch

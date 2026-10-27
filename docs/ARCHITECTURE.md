@@ -24,7 +24,6 @@ Guards: `restrictedRepos` skips a repo, even if it is installed.
 Restricted today: `.github`, `admin`, `safe-settings`, `docs`.
 Per-repo files live in the admin repo, not in each target repo.
 Safe-settings never reads a target repo `.github/settings.yml`.
-Old probot files in target repos are gone, and must stay gone.
 
 ## Plugins in use
 
@@ -53,10 +52,11 @@ Sole maintainer needs no required reviewer, and no required check.
 Public repos get branch protection, private repos do not.
 Private repos on a free plan return 403 for branch protection.
 That 403 is a plan limit, not a config error.
-Rulesets are not managed by safe-settings in this org.
+Rulesets are not managed by safe-settings in this org, yet.
 Rulesets are Diffable, so enabling them would delete unlisted rulesets.
 Two manual rulesets exist today, Tag protection and Default.
 Do not enable rulesets until both manual rulesets are in YAML, exactly.
+See `RULESETS-MIGRATION.md` for the migration plan.
 
 ## Flow, live sync
 
@@ -76,7 +76,7 @@ Code catches that failure, and the job still succeeds.
 
 ## Flow, dry run
 
-Pull request to main, with `safe-settings/**` changed, starts dry run.
+Pull request to main starts dry run, with no paths filter.
 Dry run uses the same steps, plus `FULL_SYNC_NOP=true`.
 Dry run logs planned changes, and makes no live changes.
 Dry run also loads config from main, not from the PR branch.

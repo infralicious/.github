@@ -2,3 +2,8 @@
 # Do not set a required approver count. That count would stall every merge.
 safe-settings/** @nitrocode
 .github/workflows/** @nitrocode
+docs/** @nitrocode
+*.md @nitrocode
+renovate.json5 @nitrocode
+LICENSE @nitrocode
+AGENTS.md @nitrocode
