@@ -8,9 +8,9 @@
 # Branch rules live in suborgs/public.yml only.
 # A suborg file cannot strip a rule set at the org level.
 # Private repos would then fail every sync with a 403 error.
-# Labels: keep this list complete for the baseline.
-# A repo that adds a custom label must list its full label set.
-# That repo file must list every label, or sync may remove the custom label.
+# Labels: this list is the baseline, not a complete list anymore.
+# Additive labels mode is on below, so a custom label added in the UI stays.
+# A repo no longer needs to list its full label set to keep a custom label.
 # Default branch: all managed repos use main today.
 # Safe-settings renames the default branch when the config differs.
 # Do not set a different default branch here without a plan.
@@ -83,12 +83,24 @@ labels:
 # Additive labels, enabled 2026-10-27.
 # Labels plugin only adds and updates labels, it never deletes a label not listed here.
 # A custom label added in the GitHub UI stays, even if it is not in the list above.
+# Labels include, exclude, and oldname rename are unused on purpose.
+# Plain list plus additive mode covers the need, no label renames are planned.
+# labels include would keep extra labels, exclude would keep a pattern, oldname would rename a label.
 additive_plugins:
   - labels
+# Additive mode for other Diffable plugins is unused on purpose.
+# Additive only matters when a plugin runs, and teams, collaborators, environments, and rulesets do not run here.
+# additive_plugins for those plugins would change nothing today, add one only when its plugin is enabled.
+# disable_plugins, commented out on purpose.
+# Every enabled plugin is wanted, disabling a plugin would hide a config section silently.
+# disable_plugins:
+#   - plugin: labels
+#     target: all
 
 # Teams, commented out on purpose.
 # Org has no teams today, and the user is the sole maintainer.
 # Adding a team here would grant repo access, so add a team only when a team exists.
+# Teams may also need wider App permissions than the current set, check permissions before enabling.
 # teams:
 #   - name: core
 #     permission: admin
@@ -98,6 +110,7 @@ additive_plugins:
 # Collaborators, commented out on purpose.
 # No outside collaborators exist today, only nitrocode on the main repos.
 # Adding a collaborator here would grant repo access, so add one only when needed.
+# Collaborators may also need wider App permissions than the current set, check permissions before enabling.
 # collaborators:
 #   - username: example-user
 #     permission: pull

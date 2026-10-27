@@ -98,7 +98,7 @@ Never commit a client secret.
 
 Safe-settings does not manage this repo.
 Restricted repos include `.github`, so sync skips it.
-Set main protection for this repo by hand, before a merge.
+Admin main protection is set by hand, not by safe-settings.
 Block force pushes and branch deletion.
 Require the dry run check, named safeSettingsDryRun.
 That check does not need a human approver.
