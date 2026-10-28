@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Docs
+    url: https://infralicious.github.io/
+    about: Read docs first, before you open an issue.
+  - name: Contact form
+    url: https://infralicious.com/contact.html
+    about: General contact, or a security report, see SECURITY.md.
