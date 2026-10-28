@@ -29,7 +29,7 @@ Safe-settings never reads a target repo `.github/settings.yml`.
 
 Repository plugin: identity fields, flags, merge methods, security.
 Labels plugin: additive mode only, see below.
-Rulesets plugin: main, tag, and push rulesets, weak gates, public repos only.
+Rulesets plugin: main and tag rulesets, weak gates, public repos only.
 Suborg plugin: `suborgrepos` lists, exact names, no glob patterns.
 No other plugin runs live today.
 Other plugins are commented in config, with a reason for each.
