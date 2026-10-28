@@ -1,0 +1,18 @@
+{
+  "name": "infralicious-safe-settings",
+  "url": "https://github.com/infralicious/.github",
+  "description": "Safe-settings for infralicious, run as a GitHub Action",
+  "public": false,
+  "hook_attributes": {
+    "active": false
+  },
+  "redirect_url": "https://github.com/infralicious/.github",
+  "default_permissions": {
+    "administration": "write",
+    "contents": "read",
+    "issues": "write",
+    "metadata": "read",
+    "pull_requests": "write"
+  },
+  "default_events": []
+}
