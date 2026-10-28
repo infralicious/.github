@@ -7,24 +7,7 @@ repository:
   description: service-control-policies or SCPs
   private: true
 
-# Push ruleset for this private repo, migrated 2026-10-27.
-# Push rulesets do not work on public repos, GitHub refuses them with 422.
-# This private repo is the only repo where a push ruleset is applicable.
-# Push ruleset blocks private key file extensions, for all pushes.
-# Admin bypass is always, so an admin can override in an emergency.
-# No branch ruleset here, private repos have no branch rulesets on the free plan.
-rulesets:
-  - name: Protect pushes
-    target: push
-    enforcement: active
-    bypass_actors:
-      - actor_type: RepositoryRole
-        name: admin
-        bypass_mode: always
-    conditions: {}
-    rules:
-      - type: file_extension_restriction
-        parameters:
-          restricted_file_extensions:
-            - "*.pem"
-            - "*.key"
+# No rulesets here, private repos have no rulesets on the free plan.
+# Push rulesets also return 403 for private repos on the free plan, verified 2026-10-27.
+# Live sync run 40608650379 failed only on this repo, for that reason.
+# Public repos got their rulesets in that run, this repo got none, and that is correct.
