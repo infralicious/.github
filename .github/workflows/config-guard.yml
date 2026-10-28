@@ -1,0 +1,23 @@
+name: Config Guard
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  configGuard:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout v4
+      - name: Run local config guard
+        run: python3 scripts/check-config.py guard
+  prConfigSimulation:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # actions/checkout v4
+      - name: Simulate PR rulesets against live rulesets
+        run: python3 scripts/check-config.py simulate
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

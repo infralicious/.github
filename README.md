@@ -9,6 +9,8 @@ It holds no product code, no site code, and no app code.
 
 - Safe-settings config, in `safe-settings/`.
 - Community health files, in repo root and in `.github/`.
+- Guards, in `scripts/check-config.py`, `docs/GUARDS.md`, and `.pre-commit-config.yaml`.
+- Sponsor button, in `.github/FUNDING.yml`, GitHub Sponsors nitrocode.
 - Org profile README, in `profile/README.md`.
 - Safe-settings sync and dry run workflows, in `.github/workflows/`.
 - Setup and architecture docs, in `docs/`.
