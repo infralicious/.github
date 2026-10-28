@@ -87,7 +87,7 @@ Guard: local guard requires a 40-char SHA, with a version comment, in both workf
 - Safe Settings Dry Run, job safeSettingsDryRun, main config only, see Footgun 1.
 - Safe Settings Sync, schedule and manual, live, after merge, with verification.
 
-Admin ruleset requires, after this PR merges and the ruleset update lands:
+Admin ruleset requires, live from 2026-10-27, ruleset id 26008879:
 safeSettingsDryRun, validateConfig, configGuard, prConfigSimulation.
 All four run on every PR to main, so a PR cannot merge cleanly with a guard failure, unless an admin bypasses by PR.
 
