@@ -17,6 +17,9 @@
 // - Safe-settings ignores security_and_analysis today, in ignorableFields.
 // - So this script will not fight safe-settings, fields are disjoint.
 // - Private repos: secret scanning is not available on free plan, skip, warn, do not fail.
+// Token note: use an App installation token, not a plain GITHUB_TOKEN.
+// Plain GITHUB_TOKEN, contents read, sees security_and_analysis as disabled.
+// App token, administration write, sees the true live status, verified 2026-10-27.
 // Usage, dry run only, in this PR:
 //   GITHUB_TOKEN=... node scripts/security.js --dry-run
 // Apply mode exists in code, but no workflow calls it yet, review it first.
