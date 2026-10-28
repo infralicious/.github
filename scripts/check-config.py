@@ -132,6 +132,24 @@ def check_guard():
             pins[path] = (m.group(1), m.group(2))
     if len(set(pins.values())) != 1:
         errors.append(f"safe-settings pins differ: {pins}")
+    # Security config, must parse, and must list public repos only, plus private skip
+    try:
+        sec = json.load(open('security.json'))
+        sec_repos = sec.get('repos') or {}
+        for name, vals in sec_repos.items():
+            if vals.get('private') is True:
+                continue
+            for key, val in vals.items():
+                if val not in ['enabled', 'disabled']:
+                    errors.append(f'security.json {name} {key} must be enabled or disabled, got {val}')
+    except Exception as e:
+        errors.append(f'security.json parse fail: {e}')
+    # ADR format, each ADR must hold Status, Date, Context, Decision, Consequences
+    for adr in sorted(glob.glob('docs/adrs/0*.md')):
+        text = open(adr).read()
+        for section in ['Date:', 'Status:', '## Context', '## Decision', '## Consequences']:
+            if section not in text:
+                errors.append(f'{adr} missing {section}')
     # FUNDING, github sponsor must be a real account, not a placeholder
     funding_path = ".github/FUNDING.yml"
     if os.path.exists(funding_path):

@@ -1,0 +1,26 @@
+name: Sync Health
+on:
+  workflow_run:
+    workflows: [Safe Settings Sync]
+    types: [completed]
+jobs:
+  syncHealth:
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Open issue on sync failure, dedupe by title
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          TITLE="Safe Settings Sync failed: run $RUN_ID"
+          EXISTING=$(gh api "repos/${{ github.repository }}/issues?state=open" --jq ".[] | select(.title == \"$TITLE\") | .number" | head -n 1)
+          if [ -n "$EXISTING" ]; then
+            echo "Issue already open: $EXISTING, skip duplicate"
+            exit 0
+          fi
+          gh api -X POST "repos/${{ github.repository }}/issues" -f title="$TITLE" -f body="Safe Settings Sync failed. Run: $RUN_URL. Fix main config, then dispatch a live sync by hand, and verify live. Close this issue after a successful sync." --jq '.html_url'
