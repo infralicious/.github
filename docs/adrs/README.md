@@ -19,3 +19,4 @@ Template: Title, Date, Status, Context, Decision, Consequences, Alternatives.
 - ADR-0008: Publish no email in community files, use contact form only.
 - ADR-0009: Enable secret scanning per repo, not org config alone.
 - ADR-0010: Dry run tests main, not PR, so simulate script is required.
+- ADR-0011: Enable secret scanning on admin repo itself.

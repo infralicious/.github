@@ -1,1 +1,35 @@
-{"repos":{"actions-checkout":{"secret_scanning":"enabled","secret_scanning_push_protection":"enabled"},"awesome-service-control-policies":{"secret_scanning":"enabled","secret_scanning_push_protection":"enabled"},"infralicious.github.io":{"secret_scanning":"enabled","secret_scanning_push_protection":"enabled"},"renovate-config":{"secret_scanning":"enabled","secret_scanning_push_protection":"enabled"},"saas-auth-wall-of-shame":{"secret_scanning":"enabled","secret_scanning_push_protection":"enabled"},"service-control-policies":{"private":true},"terraform-aws-securityhub-batchupdatefindings":{"secret_scanning":"enabled","secret_scanning_push_protection":"enabled"}}}
+{
+  "repos": {
+    ".github": {
+      "secret_scanning": "enabled",
+      "secret_scanning_push_protection": "enabled"
+    },
+    "actions-checkout": {
+      "secret_scanning": "enabled",
+      "secret_scanning_push_protection": "enabled"
+    },
+    "awesome-service-control-policies": {
+      "secret_scanning": "enabled",
+      "secret_scanning_push_protection": "enabled"
+    },
+    "infralicious.github.io": {
+      "secret_scanning": "enabled",
+      "secret_scanning_push_protection": "enabled"
+    },
+    "renovate-config": {
+      "secret_scanning": "enabled",
+      "secret_scanning_push_protection": "enabled"
+    },
+    "saas-auth-wall-of-shame": {
+      "secret_scanning": "enabled",
+      "secret_scanning_push_protection": "enabled"
+    },
+    "service-control-policies": {
+      "private": true
+    },
+    "terraform-aws-securityhub-batchupdatefindings": {
+      "secret_scanning": "enabled",
+      "secret_scanning_push_protection": "enabled"
+    }
+  }
+}

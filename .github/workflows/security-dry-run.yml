@@ -20,6 +20,7 @@ jobs:
           private-key: ${{ secrets.SAFE_SETTINGS_PRIVATE_KEY }}
           owner: infralicious
           repositories: |
+            .github
             actions-checkout
             awesome-service-control-policies
             infralicious.github.io
