@@ -1,7 +1,7 @@
 # Rulesets migration plan, implemented in PR, see status below
 
-Status: migration PR open, not merged yet, rulesets are not live yet.
-After merge, live sync creates rulesets, then legacy protection is deleted by hand.
+Status: migration live 2026-10-27, PR 6 merged as 135334e, PR 7 merged as b6f2e2f.
+Live sync creates rulesets, legacy protection deleted by hand, final live sync succeeds.
 Admin repo is the one exception, it stays legacy, see below.
 
 Question: should branch protection move to rulesets?
@@ -126,14 +126,17 @@ No change: admin repo protection, admin is restricted, set by hand.
 No change: labels, repo flags, alerts, or restricted repos.
 No change: schedule, dry run, or validation workflows.
 
-## Push rulesets, where applicable
+## Push rulesets, correction, verified live 2026-10-27
 
 Push rulesets do not work on public repos, GitHub refuses them with 422.
-Public repos get no push ruleset, branch and tag rulesets cover them.
-Private service-control-policies gets one push ruleset, Protect pushes.
-Protect pushes blocks file extensions *.pem and *.key, for all pushes.
-Admin bypass is always, so an admin can override in an emergency.
-No other push rules are added, to keep friction low.
+Push rulesets also do not work on private repos on the free plan.
+Live sync run 40608650379 failed only on private service-control-policies.
+Error was 403, for rulesets get and create, on the free plan.
+Public repos got their rulesets in that run, private repo got none.
+PR 7 removed Protect pushes from the private repo, next live sync succeeded.
+Private repo has no rulesets today, and no branch protection either.
+That matches the free plan limit, not a config error.
+Do not re-add a push ruleset to any repo on the free plan.
 
 ## Admin repo, the one legacy exception
 
