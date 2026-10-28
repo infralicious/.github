@@ -54,14 +54,16 @@ Secrets: `SAFE_SETTINGS_PRIVATE_KEY`, `SAFE_SETTINGS_GITHUB_CLIENT_SECRET`.
 Never commit a private key or a client secret.
 Never paste a secret into chat, a file, or a log.
 
-## Step 5: Protect the admin repo main branch
+## Step 5: Protect the admin repo main branch, with a ruleset
 
-Set main branch protection by hand, not by safe-settings.
+Set a main ruleset by hand, not by safe-settings.
 Safe-settings skips the admin repo, because it is restricted.
-Block force pushes and branch deletion.
-Require the dry run check, named `safeSettingsDryRun`.
+Ruleset id in infralicious: 26008879, name Protect main, active.
+Block deletion and non-fast-forward, require a pull request.
+Require checks: safeSettingsDryRun, validateConfig, configGuard, prConfigSimulation.
 Set required approvers to 0, for a sole maintainer.
-Set enforce_admins to false, so an admin can still merge.
+Bypass: admin, bypass_mode pull_request, not always.
+That blocks direct pushes, while PR merges still work.
 Use pull requests for every config change.
 CODEOWNERS gives notification only, it does not approve.
 
@@ -113,3 +115,16 @@ Manual dispatch still works, even after a schedule stops.
 Review config changes by pull request, every time.
 Never edit live settings in the UI, without a config change.
 UI edits will be reverted by the next sync, by design.
+
+## Step 10: Disaster recovery, read before you need it
+
+See docs/DISASTER-RECOVERY.md, for admin repo loss, App loss, key loss, ruleset loss, and bad config.
+No secrets live in this repo, so recovery never needs a secret from a file.
+
+## Step 11: New org checklist, replace these values
+
+Replace org login, App name, App ID, client ID, and all secrets.
+Replace public repo list, private repo list, and restricted repo list.
+Replace ruleset names, if the new org uses different names.
+Replace sponsor account, in .github/FUNDING.yml, if the new org uses a different account.
+Run scripts/check-config.py guard and simulate, before the first live sync.

@@ -173,9 +173,37 @@ def merged_rulesets():
         merged.setdefault(name, set()).update(rules)
     return merged
 
+def org_repos():
+    token = os.environ.get("GITHUB_TOKEN")
+    req = urllib.request.Request(
+        "https://api.github.com/orgs/infralicious/repos?per_page=100",
+        headers={"Accept": "application/vnd.github+json", "User-Agent": "config-guard"},
+    )
+    if token:
+        req.add_header("Authorization", f"Bearer {token}")
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return json.load(resp)
+    except Exception as e:
+        print(f"SIMULATE WARN: cannot list org repos: {e}")
+        return None
+
 def check_simulate():
     merged = merged_rulesets()
     errors = []
+    # New repo detection: a new org repo gets baseline only, no Protect main,
+    # until it is added to a suborg list. Fail, so it cannot stay unprotected.
+    repos = org_repos()
+    if repos is not None:
+        known = set(PUBLIC_REPOS + PRIVATE_REPOS + RESTRICTED)
+        for r in repos:
+            name = r["name"]
+            if name not in known:
+                errors.append(f"org repo {name} is not in config, add it to a suborg list or to restrictedRepos, it gets baseline only today")
+            if name in PUBLIC_REPOS and r.get("default_branch") != "main":
+                errors.append(f"{name} default branch is {r.get('default_branch')}, not main, next sync would rename it")
+            if r.get("archived"):
+                errors.append(f"{name} is archived, config should not sync it, remove it from suborg lists")
     for repo in PUBLIC_REPOS:
         want = merged.get(repo, set())
         required = REQUIRED_RULESETS.get(repo, DEFAULT_REQUIRED)

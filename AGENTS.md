@@ -31,7 +31,8 @@ Safe-settings never reads a target repo `.github/settings.yml`.
 Baseline must not set identity fields, or it wipes repo identity.
 Labels run in additive mode, custom UI labels stay.
 Branch rules are gone, rulesets replace them, migrated 2026-10-27.
-Rulesets live in suborgs for main, and in repos for tags and pushes.
+Rulesets live in suborgs for main, and in repos for tags.
+No push rulesets, free plan rejects them.
 Private repos have no branch rulesets, free plan returns 403.
 Rulesets are Diffable, enabling them deletes unlisted rulesets.
 Do not remove a ruleset from YAML without a live deletion plan.
@@ -74,6 +75,6 @@ Use hyphens, or restructure a sentence, instead of em dashes.
 - scripts/check-config.py is the single guard source, local and CI use the same script.
 - Config Guard workflow runs guard and simulate on every PR to main.
 - Simulate reads live rulesets, read only, and fails on missing required or protected deletion.
-- Admin ruleset requires safeSettingsDryRun, validateConfig, configGuard, prConfigSimulation, after the ruleset update lands.
+- Admin ruleset requires safeSettingsDryRun, validateConfig, configGuard, prConfigSimulation, live from 2026-10-27.
 - Admin main bypass is pull_request, not always, direct pushes to admin main are blocked.
 - Pre-commit is optional, CI is the gate, phone-first work cannot run pre-commit.
