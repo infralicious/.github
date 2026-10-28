@@ -8,7 +8,22 @@ repository:
     - checkout
     - github-actions
     - security
-# Rulesets, commented out on purpose for this repo.
-# This repo already has a manual Tag protection ruleset for tags v*, with deletion, non-fast-forward, and update rules.
-# Safe-settings ruleset sync in normal mode would delete that ruleset if it is not listed in YAML.
-# Do not enable rulesets for this repo until that manual ruleset is imported into YAML exactly.
+# Rulesets for this repo, imported exactly from live, migrated 2026-10-27.
+# Tag protection was manual before, now it is in code, with the same rules.
+# Tag protection covers tags v*, with deletion, non-fast-forward, and update rules.
+# Bypass actors are empty on purpose, to match live, no one can bypass tag rules.
+# Protect main comes from the public suborg, it is not listed here again.
+rulesets:
+  - name: Tag protection
+    target: tag
+    enforcement: active
+    bypass_actors: []
+    conditions:
+      ref_name:
+        include:
+          - refs/tags/v*
+        exclude: []
+    rules:
+      - type: deletion
+      - type: non_fast_forward
+      - type: update

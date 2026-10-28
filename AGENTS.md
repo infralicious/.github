@@ -30,11 +30,12 @@ Per-repo overrides live in the admin repo, in `safe-settings/repos/`.
 Safe-settings never reads a target repo `.github/settings.yml`.
 Baseline must not set identity fields, or it wipes repo identity.
 Labels run in additive mode, custom UI labels stay.
-Branch rules live in suborgs, never in the org baseline.
-Private repos have no branch protection, free plan returns 403.
+Branch rules are gone, rulesets replace them, migrated 2026-10-27.
+Rulesets live in suborgs for main, and in repos for tags and pushes.
+Private repos have no branch rulesets, free plan returns 403.
 Rulesets are Diffable, enabling them deletes unlisted rulesets.
-Do not enable rulesets until manual rulesets are imported exactly.
-See `docs/RULESETS-MIGRATION.md` for that plan.
+Do not remove a ruleset from YAML without a live deletion plan.
+See `docs/RULESETS-MIGRATION.md` for the migration plan.
 
 ## Workflows
 
@@ -59,7 +60,7 @@ Test the safe-settings regex pattern, against both workflows.
 Open a pull request, wait for dry run and validation.
 Merge only after approval, then dispatch a live sync by hand.
 Verify live settings by API, after every live sync.
-Check branch protection, labels, rulesets, and restricted repos.
+Check rulesets, labels, and restricted repos.
 Report the live result, with run IDs, not just a green check.
 
 ## Language

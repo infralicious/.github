@@ -1,4 +1,8 @@
-# Rulesets migration plan, not live yet
+# Rulesets migration plan, implemented in PR, see status below
+
+Status: migration PR open, not merged yet, rulesets are not live yet.
+After merge, live sync creates rulesets, then legacy protection is deleted by hand.
+Admin repo is the one exception, it stays legacy, see below.
 
 Question: should branch protection move to rulesets?
 Short answer: yes, rulesets are the GitHub direction, with care.
@@ -121,6 +125,25 @@ No change: private repos, no protection and no rulesets, free plan limit.
 No change: admin repo protection, admin is restricted, set by hand.
 No change: labels, repo flags, alerts, or restricted repos.
 No change: schedule, dry run, or validation workflows.
+
+## Push rulesets, where applicable
+
+Push rulesets do not work on public repos, GitHub refuses them with 422.
+Public repos get no push ruleset, branch and tag rulesets cover them.
+Private service-control-policies gets one push ruleset, Protect pushes.
+Protect pushes blocks file extensions *.pem and *.key, for all pushes.
+Admin bypass is always, so an admin can override in an emergency.
+No other push rules are added, to keep friction low.
+
+## Admin repo, the one legacy exception
+
+Admin repo is restricted, safe-settings does not manage it.
+Admin repo main protection stays legacy, for now, by hand.
+Legacy protection requires PR, count 0, and check safeSettingsDryRun.
+Ruleset equivalent needs a required_status_checks integration mapping.
+That mapping is not verified yet, and a wrong mapping could block merges.
+Migrate admin repo separately, after safe-settings rulesets prove live.
+Admin bypass always would make that migration safe, when it happens.
 
 ## Recommendation
 

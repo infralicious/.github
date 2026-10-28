@@ -87,7 +87,7 @@ Read the sync run log, and check for success.
 Expect a check-run 403 error in the log, if checks write is missing.
 That error is caught, and the job still succeeds.
 Verify live settings for every non-restricted repo, by API.
-Check wiki, delete on merge, labels, topics, and branch protection.
+Check wiki, delete on merge, labels, topics, and rulesets.
 Check that restricted repos are unchanged, by API.
 Restricted repos today are `.github`, `admin`, `safe-settings`, `docs`.
 

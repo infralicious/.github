@@ -29,7 +29,7 @@ Safe-settings never reads a target repo `.github/settings.yml`.
 
 Repository plugin: identity fields, flags, merge methods, security.
 Labels plugin: additive mode only, see below.
-Branches plugin: main branch protection, weak gates, public repos only.
+Rulesets plugin: main, tag, and push rulesets, weak gates, public repos only.
 Suborg plugin: `suborgrepos` lists, exact names, no glob patterns.
 No other plugin runs live today.
 Other plugins are commented in config, with a reason for each.
@@ -43,14 +43,14 @@ A label made in the GitHub UI stays, even if it is not in YAML.
 Without additive mode, an unlisted label would be deleted by sync.
 That risk is why additive mode is on, for all repos.
 
-## Branch protection, weak gates by design
+## Rulesets, weak gates by design, migrated 2026-10-27
 
-Main protection blocks force pushes and branch deletion.
-Main protection sets required checks to null, reviews to null.
-Main protection sets restrictions to null, enforce_admins to false.
+Main ruleset blocks force pushes and branch deletion.
+Main ruleset sets no required reviews, and no required checks.
+Main ruleset bypass is admin always, to match old enforce_admins false.
 Sole maintainer needs no required reviewer, and no required check.
-Public repos get branch protection, private repos do not.
-Private repos on a free plan return 403 for branch protection.
+Public repos get rulesets, private repos do not get branch rulesets.
+Private repos on a free plan return 403 for branch rulesets.
 That 403 is a plan limit, not a config error.
 Rulesets are not managed by safe-settings in this org, yet.
 Rulesets are Diffable, so enabling them would delete unlisted rulesets.
@@ -68,7 +68,7 @@ Workflow runs `npm run full-sync`, with App env vars.
 Full-sync reads config from the admin repo, by API.
 Full-sync reads config from main, not from a pull request branch.
 Full-sync builds one config per installed repo, in layers.
-Full-sync applies settings, labels, and branch protection, by API.
+Full-sync applies settings, labels, and rulesets, by API.
 Full-sync skips restricted repos, with no changes at all.
 Full-sync writes a check-run report, if the App has checks write.
 App has no checks write today, so that step fails with 403.
@@ -138,7 +138,7 @@ Rotation: new key, new secret, old key revoked, in that order.
 
 Dry run loads main config, not PR config, see above.
 Check-run report fails with 403, App has no checks write.
-Private repos have no branch protection, free plan limit.
+Private repos have no branch rulesets, free plan limit.
 Schedules stop after 60 days with no repo activity.
 Labels in the admin repo are not managed, admin is restricted.
 Wiki flag off hides a wiki, it does not delete wiki content.
