@@ -7,3 +7,5 @@ docs/** @nitrocode
 renovate.json5 @nitrocode
 LICENSE @nitrocode
 AGENTS.md @nitrocode
+scripts/** @nitrocode
+.pre-commit-config.yaml @nitrocode

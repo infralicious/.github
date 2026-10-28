@@ -1,0 +1,11 @@
+# Sponsor button, org-wide default.
+# This file lives in the .github repo, so repos without their own
+# FUNDING.yml show the same sponsor button.
+# GitHub Sponsors account, verified live: https://github.com/sponsors/nitrocode
+github: nitrocode
+# Other platforms, commented out on purpose, not missing.
+# Add a platform only when an account exists for it, never a placeholder.
+# patreon: unused, no Patreon account for this org.
+# ko_fi: unused, no Ko-fi account for this org.
+# open_collective: unused, no Open Collective for this org.
+# custom: unused, no custom funding page for this org.
