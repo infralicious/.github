@@ -2,7 +2,7 @@
 
 Status: migration live 2026-10-27, PR 6 merged as 135334e, PR 7 merged as b6f2e2f.
 Live sync creates rulesets, legacy protection deleted by hand, final live sync succeeds.
-Admin repo is the one exception, it stays legacy, see below.
+Admin repo migrated 2026-10-27, see Admin repo section below, no legacy left.
 
 Question: should branch protection move to rulesets?
 Short answer: yes, rulesets are the GitHub direction, with care.
@@ -138,15 +138,20 @@ Private repo has no rulesets today, and no branch protection either.
 That matches the free plan limit, not a config error.
 Do not re-add a push ruleset to any repo on the free plan.
 
-## Admin repo, the one legacy exception
+## Admin repo, migrated 2026-10-27, no legacy left
 
-Admin repo is restricted, safe-settings does not manage it.
-Admin repo main protection stays legacy, for now, by hand.
-Legacy protection requires PR, count 0, and check safeSettingsDryRun.
-Ruleset equivalent needs a required_status_checks integration mapping.
-That mapping is not verified yet, and a wrong mapping could block merges.
-Migrate admin repo separately, after safe-settings rulesets prove live.
-Admin bypass always would make that migration safe, when it happens.
+Admin repo migrated by hand, not by safe-settings, it is restricted.
+Ruleset id 26008879, name Protect main, target branch, enforcement active.
+Rules: deletion, non_fast_forward, pull_request, required_status_checks.
+Pull request parameters: count 0, dismiss stale false, code owner false.
+Pull request parameters: last push false, thread resolution false.
+Required checks: safeSettingsDryRun, integration 15368, strict false.
+Integration 15368 came from legacy protection, not from a guess.
+Bypass: RepositoryRole admin, bypass_mode always, to match enforce_admins false.
+Legacy protection deleted by API, after ruleset creation, verified by API.
+First PR under the new ruleset was PR 9, community health files, checks passed.
+That PR merged normally, with no admin merge, proving the check mapping works.
+Admin ruleset is not managed by safe-settings, it stays by hand, like legacy did.
 
 ## Recommendation
 
