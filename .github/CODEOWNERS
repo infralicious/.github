@@ -8,4 +8,6 @@ renovate.json5 @nitrocode
 LICENSE @nitrocode
 AGENTS.md @nitrocode
 scripts/** @nitrocode
+security.json @nitrocode
+docs/adrs/** @nitrocode
 .pre-commit-config.yaml @nitrocode
