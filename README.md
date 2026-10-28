@@ -8,6 +8,8 @@ It holds no product code, no site code, and no app code.
 ## What this repo holds
 
 - Safe-settings config, in `safe-settings/`.
+- Community health files, in repo root and in `.github/`.
+- Org profile README, in `profile/README.md`.
 - Safe-settings sync and dry run workflows, in `.github/workflows/`.
 - Setup and architecture docs, in `docs/`.
 - Renovate config, in `renovate.json5`.
@@ -42,14 +44,16 @@ Admin main protection requires the dry run check, by hand.
 - Ruleset migration plan: `docs/RULESETS-MIGRATION.md`.
 - Agent guide: `AGENTS.md`.
 
-## What this repo does not hold, on purpose
+## Community health files, proliferated org-wide
 
-No org-wide community health files, like CONTRIBUTING or SECURITY.
-Those files in a `.github` repo become defaults for all org repos.
-That effect is too broad for this automation repo, today.
-No issue or pull request templates, for the same reason.
+CONTRIBUTING, SECURITY, CODE_OF_CONDUCT, and SUPPORT live in repo root.
+Issue templates and a pull request template live in `.github/`.
+Profile README lives in `profile/README.md`, for the org profile page.
+Files in a `.github` repo become defaults for org repos without their own files.
+A repo file, if it exists, wins over an org default file.
 No FUNDING file, this org does not use it.
-Add a community health file only with an org-wide decision, first.
+No email address is published in these files, on purpose.
+Contact form is the public contact, see `SECURITY.md` and `SUPPORT.md`.
 
 ## License
 
