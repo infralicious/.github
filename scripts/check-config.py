@@ -150,6 +150,12 @@ def check_guard():
         for section in ['Date:', 'Status:', '## Context', '## Decision', '## Consequences']:
             if section not in text:
                 errors.append(f'{adr} missing {section}')
+    # Renovate-valid action comment, must be # vX or # vX.Y.Z, not # actions/name vX
+    for path in sorted(glob.glob('.github/workflows/*.yml')):
+        for line in open(path):
+            m = re.search(r'uses: .*@([a-f0-9]{40}) #(.*)', line)
+            if m and not re.match(r'^v[0-9]+(\.[0-9]+)*$', m.group(2).strip()):
+                errors.append(f'{path} action comment must be # vX.Y.Z, got #{m.group(2).strip()}, Renovate ignores other formats')
     # FUNDING, github sponsor must be a real account, not a placeholder
     funding_path = ".github/FUNDING.yml"
     if os.path.exists(funding_path):
