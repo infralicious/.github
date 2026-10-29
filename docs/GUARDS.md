@@ -68,6 +68,7 @@ Target repos now also use bypass pull_request for branches, since 2026-10-29, se
 Target tag rulesets use bypass empty, since 2026-10-29, see ADR-0012.
 Guard fails if a branch ruleset uses bypass always, or if a tag ruleset uses any bypass.
 Guard fails if a repo file weakens baseline, see ADR-0012 for the full list.
+Guard fails if a checked suborg Protect main misses its required check, see ADR-0014.
 
 ## Footgun 10: scheduled sync is not atomic
 

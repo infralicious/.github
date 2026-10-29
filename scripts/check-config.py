@@ -25,6 +25,19 @@ PUBLIC_REPOS = [
     "saas-auth-wall-of-shame",
     "terraform-aws-securityhub-batchupdatefindings",
 ]
+PUBLIC_NO_CHECK_REPOS = [
+    "awesome-service-control-policies",
+    "infralicious.github.io",
+    "renovate-config",
+    "saas-auth-wall-of-shame",
+    "terraform-aws-securityhub-batchupdatefindings",
+]
+# Dedicated checked suborgs: file -> {repo: required check context}
+CHECKED_SUBORGS = {
+    "safe-settings/suborgs/public-actions-checkout.yml": {
+        "actions-checkout": "test",
+    },
+}
 PRIVATE_REPOS = ["service-control-policies"]
 RESTRICTED = [".github", "admin", "safe-settings", "docs"]
 REQUIRED_RULESETS = {
@@ -120,8 +133,41 @@ def check_guard():
     # Suborg lists, exact, private must never enter public
     public = load_yaml("safe-settings/suborgs/public.yml")
     public_repos = public.get("suborgrepos") or []
-    if sorted(public_repos) != sorted(PUBLIC_REPOS):
-        errors.append(f"public suborgrepos must be exactly {PUBLIC_REPOS}, got {public_repos}")
+    if sorted(public_repos) != sorted(PUBLIC_NO_CHECK_REPOS):
+        errors.append(f"public suborgrepos must be exactly {PUBLIC_NO_CHECK_REPOS}, got {public_repos}")
+    # Union of public and checked suborgs must be all public repos, no repo dropped silently.
+    union_repos = list(public_repos)
+    for checked_path, checked_map in CHECKED_SUBORGS.items():
+        checked_data = load_yaml(checked_path)
+        checked_repos = checked_data.get("suborgrepos") or []
+        if sorted(checked_repos) != sorted(checked_map.keys()):
+            errors.append(f"{checked_path} suborgrepos must be exactly {list(checked_map.keys())}, got {checked_repos}")
+        union_repos.extend(checked_repos)
+        # Checked Protect main must have the exact required check, integration 15368, strict false.
+        checked_rules = checked_data.get("rulesets") or []
+        pm_list = [r for r in checked_rules if r.get("name") == "Protect main"]
+        if len(pm_list) != 1:
+            errors.append(f"{checked_path} must hold exactly one Protect main ruleset")
+        else:
+            pm = pm_list[0]
+            if pm.get("enforcement") != "active":
+                errors.append(f"{checked_path} Protect main enforcement must stay active")
+            rc_rules = [r for r in (pm.get("rules") or []) if r.get("type") == "required_status_checks"]
+            if len(rc_rules) != 1:
+                errors.append(f"{checked_path} Protect main must hold exactly one required_status_checks rule")
+            else:
+                params = rc_rules[0].get("parameters") or {}
+                checks = params.get("required_status_checks") or []
+                for repo_name, context in checked_map.items():
+                    if not any(c.get("context") == context and c.get("integration_id") == 15368 for c in checks):
+                        errors.append(f"{checked_path} Protect main must require check {context} with integration 15368 for {repo_name}")
+                if params.get("strict_required_status_checks_policy") is not False:
+                    errors.append(f"{checked_path} strict_required_status_checks_policy must stay false")
+            pr_rules = [r for r in (pm.get("rules") or []) if r.get("type") == "pull_request"]
+            if len(pr_rules) != 1 or (pr_rules[0].get("parameters") or {}).get("allowed_merge_methods") != ["squash"]:
+                errors.append(f"{checked_path} Protect main pull_request rule must stay squash only")
+    if sorted(union_repos) != sorted(PUBLIC_REPOS):
+        errors.append(f"public plus checked suborgs must be exactly {PUBLIC_REPOS}, got {union_repos}")
     if "rulesets" in public and public["rulesets"] is None:
         errors.append("public suborg rulesets must not be null")
     private = load_yaml("safe-settings/suborgs/private.yml")
@@ -269,10 +315,11 @@ def live_rulesets(repo):
 
 def merged_rulesets():
     merged = {}
-    public = load_yaml("safe-settings/suborgs/public.yml")
-    public_rules = [r.get("name") for r in (public.get("rulesets") or [])]
-    for repo in PUBLIC_REPOS:
-        merged[repo] = set(public_rules)
+    for sub_path in sorted(glob.glob("safe-settings/suborgs/*.yml")):
+        sub_data = load_yaml(sub_path)
+        sub_rules = [r.get("name") for r in (sub_data.get("rulesets") or [])]
+        for repo in (sub_data.get("suborgrepos") or []):
+            merged.setdefault(repo, set()).update(sub_rules)
     for path in glob.glob("safe-settings/repos/*.yml"):
         name = os.path.basename(path)[:-4]
         data = load_yaml(path)

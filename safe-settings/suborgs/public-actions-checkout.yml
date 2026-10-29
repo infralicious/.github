@@ -1,0 +1,52 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/github-community-projects/safe-settings/a9a1f366ad6a738b55682d346d94f8d6c4893b09/schema/dereferenced/suborgs.json
+# Dedicated suborg for actions-checkout only, 2026-10-29, see ADR-0014.
+# Actions-checkout needs a required check, other public repos do not share that check.
+# A shared required check in public.yml would block repos with no workflows.
+# This file copies Protect main from public.yml exactly, plus one required check.
+# Protect main here must stay in sync with public.yml, except for the required check.
+# Required check context is test, job test in Test workflow, integration 15368 for GitHub Actions.
+# Context test is verified live on main check runs, and Test workflow runs on pull_request.
+# Strict policy is false, a PR does not need to be up to date with main before merge.
+# Bypass is pull_request, same as public.yml, admin can bypass via PR in an emergency.
+# Admin bypass is explicit, not automatic, normal PR merges must pass test first.
+suborgrepos:
+  - actions-checkout
+# Suborg grouping keys below are commented out on purpose, not missing.
+# suborgteams: unused, org has no teams today, so no team can select repos for this suborg.
+# suborgproperties: unused, org has no custom properties today, so no property can select repos.
+# Glob patterns in suborgrepos: unused on purpose, exact repo names are clearer.
+rulesets:
+  - name: Protect main
+    target: branch
+    enforcement: active
+    bypass_actors:
+      - actor_type: RepositoryRole
+        name: admin
+        bypass_mode: pull_request
+    conditions:
+      ref_name:
+        include:
+          - refs/heads/main
+        exclude: []
+    rules:
+      - type: deletion
+      - type: non_fast_forward
+      - type: pull_request
+        parameters:
+          allowed_merge_methods:
+            - squash
+          dismiss_stale_reviews_on_push: false
+          dismissal_restriction:
+            allowed_actors: []
+            enabled: false
+          require_code_owner_review: false
+          require_extra_approval_for_unattributed_changes: true
+          require_last_push_approval: false
+          required_approving_review_count: 0
+          required_review_thread_resolution: false
+      - type: required_status_checks
+        parameters:
+          required_status_checks:
+            - context: test
+              integration_id: 15368
+          strict_required_status_checks_policy: false
