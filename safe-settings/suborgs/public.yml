@@ -9,8 +9,9 @@
 # Rulesets still block force push and deletion, for main.
 # Required checks are per repo only, not in this shared ruleset.
 # A shared required check would block saas and terraform, which have no workflows.
-# Verified job names for a follow-up are test for actions-checkout and htmlproofer for site.
-# That follow-up needs a suborg split or a tested repo override, so it is not in this change.
+# Per-repo required checks live in repo files, not here, per ADR-0014.
+# Site requires htmlproofer, actions-checkout requires test.
+# A shared required check would still block saas and terraform, which have no workflows.
 # Baseline repo settings, labels, and alerts still apply to all installed repos.
 # Rulesets apply only when the App is installed on a repo.
 suborgrepos:

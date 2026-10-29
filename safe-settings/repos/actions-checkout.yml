@@ -14,7 +14,30 @@ repository:
 # Tag protection covers tags v*, with deletion, non-fast-forward, and update rules.
 # Bypass actors are empty on purpose, to match live, no one can bypass tag rules.
 # Protect main comes from the public suborg, it is not listed here again.
+# Required checks live in a separate ruleset, not in Protect main.
+# A separate ruleset avoids a Protect main override, per ADR-0014.
+# Action PRs run test on pull_request, job test.
+# Required check blocks merge when test fails.
 rulesets:
+  - name: Require action checks
+    target: branch
+    enforcement: active
+    bypass_actors:
+      - actor_type: RepositoryRole
+        name: admin
+        bypass_mode: pull_request
+    conditions:
+      ref_name:
+        include:
+          - refs/heads/main
+        exclude: []
+    rules:
+      - type: required_status_checks
+        parameters:
+          strict_required_status_checks_policy: false
+          required_status_checks:
+            - context: test
+              integration_id: 15368
   - name: Tag protection
     target: tag
     enforcement: active

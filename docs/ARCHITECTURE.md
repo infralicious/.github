@@ -57,7 +57,7 @@ Rulesets are managed by safe-settings now, since the 2026-10-27 migration.
 Rulesets are Diffable, so sync deletes rulesets not listed in YAML.
 Tag rulesets have bypass empty, since 2026-10-29, except actions-checkout which already had it.
 Tag creation still works, no creation rule exists in tag rulesets.
-Required checks are deferred, see ADR-0012 for the suborg split plan.
+Required checks live in repo files, see ADR-0014. Site requires htmlproofer, actions-checkout requires test.
 See `RULESETS-MIGRATION.md` for the 2026-10-27 migration history only.
 
 ## Flow, live sync

@@ -17,7 +17,30 @@ repository:
 # Tag creation still works, no creation rule exists in this ruleset.
 # Deletion and update are blocked even for admin, by design.
 # Protect main comes from the public suborg, it is not listed here again.
+# Required checks live in a separate ruleset, not in Protect main.
+# A separate ruleset avoids a Protect main override, per ADR-0014.
+# Site PRs run link-check on pull_request, job htmlproofer.
+# Required check blocks merge when htmlproofer fails, as in Renovate PR 10.
 rulesets:
+  - name: Require site checks
+    target: branch
+    enforcement: active
+    bypass_actors:
+      - actor_type: RepositoryRole
+        name: admin
+        bypass_mode: pull_request
+    conditions:
+      ref_name:
+        include:
+          - refs/heads/main
+        exclude: []
+    rules:
+      - type: required_status_checks
+        parameters:
+          strict_required_status_checks_policy: false
+          required_status_checks:
+            - context: htmlproofer
+              integration_id: 15368
   - name: Protect tags
     target: tag
     enforcement: active
