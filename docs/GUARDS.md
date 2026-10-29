@@ -59,12 +59,15 @@ Safe-settings version lives in two workflows, a SHA in each, with a version comm
 Guard: local guard fails, if a pin is not a 40-char SHA, or if the two pins differ.
 Renovate updates both pins, in one PR, never automerge, see renovate.json5.
 
-## Footgun 9: direct push to admin main, bypassing checks
+## Footgun 9: direct push to main, bypassing checks
 
 Admin ruleset bypass is pull_request, not always, for admin main only.
 That blocks direct pushes to admin main, even for admins.
 A PR can still be merged by an admin, with a failing check, that is a conscious bypass, not a silent push.
-Target repos keep bypass always, because sole maintainer direct pushes are normal there, and they have no PR requirement.
+Target repos now also use bypass pull_request for branches, since 2026-10-29, see ADR-0012.
+Target tag rulesets use bypass empty, since 2026-10-29, see ADR-0012.
+Guard fails if a branch ruleset uses bypass always, or if a tag ruleset uses any bypass.
+Guard fails if a repo file weakens baseline, see ADR-0012 for the full list.
 
 ## Footgun 10: scheduled sync is not atomic
 

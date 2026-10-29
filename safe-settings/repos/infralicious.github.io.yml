@@ -13,16 +13,15 @@ repository:
 
 # Tag ruleset for this repo, migrated 2026-10-27.
 # Protect tags covers all tags, with deletion, non-fast-forward, and update rules.
-# Admin bypass is always, to match old branch protection admin exemption.
+# Bypass actors are empty on purpose, to match actions-checkout Tag protection.
+# Tag creation still works, no creation rule exists in this ruleset.
+# Deletion and update are blocked even for admin, by design.
 # Protect main comes from the public suborg, it is not listed here again.
 rulesets:
   - name: Protect tags
     target: tag
     enforcement: active
-    bypass_actors:
-      - actor_type: RepositoryRole
-        name: admin
-        bypass_mode: always
+    bypass_actors: []
     conditions:
       ref_name:
         include:

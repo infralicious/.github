@@ -19,13 +19,16 @@
 # Do not set a different default branch here without a plan.
 repository:
   has_issues: true
-  has_projects: true
+  has_pull_requests: true
+  has_projects: false
   has_wiki: false
   default_branch: main
   allow_squash_merge: true
   allow_merge_commit: true
   allow_rebase_merge: true
   delete_branch_on_merge: true
+  squash_merge_commit_title: PR_TITLE
+  squash_merge_commit_message: PR_BODY
   security:
     enableVulnerabilityAlerts: true
     enableAutomatedSecurityFixes: false
@@ -35,9 +38,18 @@ repository:
 # Repos without Renovate need a manual fix for an alert.
   web_commit_signoff_required: false
   allow_auto_merge: false
-  allow_update_branch: false
+  allow_update_branch: true
   has_discussions: false
   is_template: false
+# has_projects false, 2026-10-29: classic Projects API returns 404, no projects exist.
+# New GitHub Projects are not tied to this flag, so false removes an empty tab only.
+# has_pull_requests true, 2026-10-29: locks PRs on, a repo file must not disable PRs.
+# allow_update_branch true, 2026-10-29: maintainer can update a fork PR with one click.
+# allow_auto_merge stays false, merge needs a manual tap, see ADR-0005.
+# squash_merge_commit_title PR_TITLE, 2026-10-29: live default was COMMIT_OR_PR_TITLE.
+# squash_merge_commit_message PR_BODY, 2026-10-29: live default was COMMIT_MESSAGES.
+# Squash history now uses PR title and PR body, not a list of commit messages.
+# Merge commit fields stay unused, Protect main allows squash only, see public suborg.
 # Repository fields below are commented out on purpose, not missing.
 # name: set only in repos/*.yml, never in baseline, or baseline would wipe identity.
 # description: set only in repos/*.yml, same reason as name.
@@ -68,14 +80,12 @@ repository:
 # ruleset_scope: repo
 
 # Repository fields below are also commented out on purpose, not missing.
-# has_pull_requests: unused, PRs stay on, disabling PRs would block contributions.
 # pull_request_creation_policy: unused, PRs from forks stay on, no restriction is needed.
-# use_squash_pr_title_as_default: unused, default commit message text is fine today.
-# squash_merge_commit_title: unused, same reason, default text is fine today.
-# squash_merge_commit_message: unused, same reason, default text is fine today.
-# merge_commit_title: unused, same reason, default text is fine today.
-# merge_commit_message: unused, same reason, default text is fine today.
-# allow_forking: unused, forking stays on, forking is expected for open source.
+# use_squash_pr_title_as_default: unused, deprecated, squash_merge_commit_title PR_TITLE covers it.
+# merge_commit_title: unused, Protect main allows squash only, merge commits do not run for main.
+# merge_commit_message: unused, same reason as merge_commit_title.
+# allow_forking: unused in baseline, forking stays on for public repos, off for private repo.
+# allow_forking is set only in service-control-policies.yml, to false, never in baseline.
 # security_and_analysis: unused in safe-settings, safe-settings ignores this field.
 # Security scanning and push protection live in security.json, handled by scripts/security.js.
 
@@ -110,6 +120,9 @@ labels:
   - name: dependencies
     color: "0366d6"
     description: Pull requests that update a dependency file
+  - name: security
+    color: d93f0b
+    description: Security issue or fix
 
 # Additive labels, enabled 2026-10-27.
 # Labels plugin only adds and updates labels, it never deletes a label not listed here.

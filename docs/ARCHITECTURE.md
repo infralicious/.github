@@ -43,20 +43,22 @@ A label made in the GitHub UI stays, even if it is not in YAML.
 Without additive mode, an unlisted label would be deleted by sync.
 That risk is why additive mode is on, for all repos.
 
-## Rulesets, weak gates by design, migrated 2026-10-27
+## Rulesets, weak gates by design, migrated 2026-10-27, hardened 2026-10-29
 
 Main ruleset blocks force pushes and branch deletion.
 Main ruleset sets no required reviews, and no required checks.
-Main ruleset bypass is admin always, to match old enforce_admins false.
+Main ruleset bypass is admin pull_request, since 2026-10-29, see ADR-0012.
+Main ruleset allows squash merges only, since 2026-10-29, see ADR-0012.
 Sole maintainer needs no required reviewer, and no required check.
 Public repos get rulesets, private repos do not get branch rulesets.
 Private repos on a free plan return 403 for branch rulesets.
 That 403 is a plan limit, not a config error.
-Rulesets are not managed by safe-settings in this org, yet.
-Rulesets are Diffable, so enabling them would delete unlisted rulesets.
-Two manual rulesets exist today, Tag protection and Default.
-Do not enable rulesets until both manual rulesets are in YAML, exactly.
-See `RULESETS-MIGRATION.md` for the migration plan.
+Rulesets are managed by safe-settings now, since the 2026-10-27 migration.
+Rulesets are Diffable, so sync deletes rulesets not listed in YAML.
+Tag rulesets have bypass empty, since 2026-10-29, except actions-checkout which already had it.
+Tag creation still works, no creation rule exists in tag rulesets.
+Required checks are deferred, see ADR-0012 for the suborg split plan.
+See `RULESETS-MIGRATION.md` for the 2026-10-27 migration history only.
 
 ## Flow, live sync
 

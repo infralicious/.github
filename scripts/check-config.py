@@ -76,6 +76,47 @@ def check_guard():
             errors.append(f"baseline settings.yml must not set {key}, it would wipe or break repos")
     if (base.get("repository") or {}).get("default_branch") != "main":
         errors.append("baseline default_branch must stay main")
+    repo_base = base.get("repository") or {}
+    if repo_base.get("has_projects") is not False:
+        errors.append("baseline has_projects must stay false, classic Projects are empty")
+    if repo_base.get("has_pull_requests") is not True:
+        errors.append("baseline has_pull_requests must stay true")
+    if repo_base.get("allow_update_branch") is not True:
+        errors.append("baseline allow_update_branch must stay true")
+    if repo_base.get("allow_auto_merge") is not False:
+        errors.append("baseline allow_auto_merge must stay false, merge needs a manual tap")
+    if repo_base.get("has_wiki") is not False:
+        errors.append("baseline has_wiki must stay false")
+    if repo_base.get("has_discussions") is not False:
+        errors.append("baseline has_discussions must stay false")
+    if repo_base.get("squash_merge_commit_title") != "PR_TITLE":
+        errors.append("baseline squash_merge_commit_title must stay PR_TITLE")
+    if repo_base.get("squash_merge_commit_message") != "PR_BODY":
+        errors.append("baseline squash_merge_commit_message must stay PR_BODY")
+    label_names = [x.get("name") for x in (base.get("labels") or [])]
+    if "security" not in label_names:
+        errors.append("baseline labels must include security")
+    # Protect main in public suborg: bypass pull_request, squash only, count 0
+    public_rules = (load_yaml("safe-settings/suborgs/public.yml").get("rulesets") or [])
+    protect_main = [r for r in public_rules if r.get("name") == "Protect main"]
+    if len(protect_main) != 1:
+        errors.append("public suborg must hold exactly one Protect main ruleset")
+    else:
+        pm = protect_main[0]
+        bypass = pm.get("bypass_actors") or []
+        if not any(b.get("bypass_mode") == "pull_request" for b in bypass):
+            errors.append("Protect main bypass must be pull_request, not always")
+        if pm.get("enforcement") != "active":
+            errors.append("Protect main enforcement must stay active")
+        pr_rules = [r for r in (pm.get("rules") or []) if r.get("type") == "pull_request"]
+        if len(pr_rules) != 1:
+            errors.append("Protect main must hold exactly one pull_request rule")
+        else:
+            params = pr_rules[0].get("parameters") or {}
+            if params.get("allowed_merge_methods") != ["squash"]:
+                errors.append("Protect main allowed_merge_methods must stay [squash] only")
+            if params.get("required_approving_review_count") != 0:
+                errors.append("Protect main required_approving_review_count must stay 0")
     # Suborg lists, exact, private must never enter public
     public = load_yaml("safe-settings/suborgs/public.yml")
     public_repos = public.get("suborgrepos") or []
@@ -132,6 +173,26 @@ def check_guard():
                 errors.append(f"{name} must not use a push ruleset, free plan rejects it")
         if name in PRIVATE_REPOS and rulesets:
             errors.append(f"{name} is private, free plan returns 403 for rulesets")
+        repo_cfg = data.get("repository") or {}
+        if repo_cfg.get("allow_auto_merge") is True:
+            errors.append(f"{name} must not set allow_auto_merge true, baseline is false")
+        if repo_cfg.get("has_wiki") is True:
+            errors.append(f"{name} must not set has_wiki true, baseline is false")
+        if repo_cfg.get("has_discussions") is True:
+            errors.append(f"{name} must not set has_discussions true, baseline is false")
+        if repo_cfg.get("has_projects") is True:
+            errors.append(f"{name} must not set has_projects true, baseline is false")
+        if name in PRIVATE_REPOS and repo_cfg.get("allow_forking") is True:
+            errors.append(f"{name} must not set allow_forking true, private repo must not fork")
+        for rule in rulesets:
+            if rule.get("enforcement") != "active":
+                errors.append(f"{name} ruleset {rule.get('name')} enforcement must stay active")
+            if rule.get("target") == "branch":
+                for b in (rule.get("bypass_actors") or []):
+                    if b.get("bypass_mode") == "always":
+                        errors.append(f"{name} branch ruleset {rule.get('name')} bypass must not be always")
+            if rule.get("target") == "tag" and rule.get("bypass_actors"):
+                errors.append(f"{name} tag ruleset {rule.get('name')} bypass must stay empty")
         if "private" in data:
             if name == "service-control-policies" and data["private"] is not True:
                 errors.append("service-control-policies must stay private: true")
