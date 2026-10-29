@@ -111,3 +111,11 @@ Add a platform only when an account exists, never a placeholder.
 - A live ruleset snapshot, stored in docs, checked by simulate, to catch manual live edits that YAML does not cover, today live edits are the source of drift, and simulate already reports them as deletions.
 - A branch protection to ruleset check, for target repos, today no legacy protection remains, so nothing to check.
 - Renovate automerge for docs-only PRs, today automerge is off for safe-settings, and docs PRs are rare, so manual merge is fine.
+
+## Suborg overlap, guard only, no scheduled check yet
+
+A repo in 2 suborgs is a hard error in safe-settings, not a merge.
+Guard fails on overlap, on glob patterns, and on suborgteams or suborgproperties.
+Dry run cannot catch overlap, as dry run tests main, not PR.
+Scheduled new-repo check is deferred, as repo creation is rare, and org has 1 member.
+Revisit scheduled check if a second maintainer joins, or if repo creation becomes monthly.

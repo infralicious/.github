@@ -89,6 +89,28 @@ def check_guard():
     for key in ["branches", "rulesets"]:
         if key in private and private[key] is not None:
             errors.append(f"private suborg must not set {key}, free plan returns 403")
+    # Suborg overlap, glob, teams, properties, across ALL suborg files.
+    # A repo in 2 suborgs is a hard error in safe-settings, not a merge.
+    # Code throws Multiple suborg configs for X in Y and Z, and whole sync can fail.
+    # Dry run cannot catch this, dry run tests main, not PR, so guard must catch it.
+    # Teams and properties are live state, not YAML state, so they can move a repo silently.
+    # Globs can overmatch a new repo, so exact names are required for ruleset suborgs.
+    # Guard fails on teams, properties, or glob patterns in any suborg file, today.
+    # To allow teams or properties later, remove this guard block first, with a live membership check.
+    import fnmatch
+    seen_suborg_repos = {}
+    for sub_path in sorted(glob.glob("safe-settings/suborgs/*.yml")):
+        sub_data = load_yaml(sub_path)
+        if sub_data.get("suborgteams"):
+            errors.append(f"{sub_path} must not use suborgteams, live team change can move a repo silently, guard forbids it today")
+        if sub_data.get("suborgproperties"):
+            errors.append(f"{sub_path} must not use suborgproperties, live property change can move a repo silently, guard forbids it today")
+        for entry in (sub_data.get("suborgrepos") or []):
+            if any(c in str(entry) for c in "*?["):
+                errors.append(f"{sub_path} must not use glob pattern {entry}, exact repo names only, glob can overmatch a new repo")
+            if entry in seen_suborg_repos:
+                errors.append(f"repo {entry} is in 2 suborgs: {seen_suborg_repos[entry]} and {sub_path}, safe-settings throws a hard error on overlap")
+            seen_suborg_repos[entry] = sub_path
     # Repo files, known names only, no unknown repo, no docs, no admin
     repo_files = sorted(os.path.basename(p)[:-4] for p in glob.glob("safe-settings/repos/*.yml"))
     known = set(PUBLIC_REPOS + PRIVATE_REPOS)
