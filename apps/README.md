@@ -15,6 +15,10 @@ It runs weekly, on Monday at 09:00 UTC.
 It runs on manual dispatch, at any time.
 It never changes a live App, it only reports drift.
 It fails when live permissions differ from a manifest.
+CI in this repo checks safe-settings only, by JWT.
+CI in renovate-config checks renovate only, by JWT.
+GITHUB_TOKEN cannot read private Apps, it returns 403.
+Local runs can check both Apps, with a user token.
 
 ## Run the check locally
 

@@ -14,7 +14,10 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Check GitHub App permissions against manifests
-        run: python3 scripts/check-apps.py
+      - name: Check safe-settings App against its manifest
+        run: >-
+          python3 scripts/check-apps.py --mode jwt
+          --manifest apps/infralicious-safe-settings.json
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APP_ID: ${{ vars.SAFE_SETTINGS_APP_ID }}
+          APP_PRIVATE_KEY: ${{ secrets.SAFE_SETTINGS_PRIVATE_KEY }}
