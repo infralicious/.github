@@ -88,8 +88,8 @@ Guard: local guard requires a 40-char SHA, with a version comment, in both workf
 - Safe Settings Sync, schedule and manual, live, after merge, with verification.
 
 Admin ruleset requires, live from 2026-10-27, ruleset id 26008879:
-safeSettingsDryRun, validateConfig, configGuard, prConfigSimulation, securityDryRun, scriptTests.
-All six run on every PR to main, so a PR cannot merge cleanly with a guard failure, unless an admin bypasses by PR.
+safeSettingsDryRun, validateConfig, configGuard, prConfigSimulation, securityDryRun, scriptTests, schemaDiscovery.
+All seven run on every PR to main, so a PR cannot merge cleanly with a guard failure, unless an admin bypasses by PR.
 
 ## Pre-commit, optional, CI is the gate
 

@@ -60,7 +60,7 @@ Set a main ruleset by hand, not by safe-settings.
 Safe-settings skips the admin repo, because it is restricted.
 Ruleset id in infralicious: 26008879, name Protect main, active.
 Block deletion and non-fast-forward, require a pull request.
-Require checks: safeSettingsDryRun, validateConfig, configGuard, prConfigSimulation, securityDryRun, scriptTests.
+Require checks: safeSettingsDryRun, validateConfig, configGuard, prConfigSimulation, securityDryRun, scriptTests, schemaDiscovery.
 Set required approvers to 0, for a sole maintainer.
 Bypass: admin, bypass_mode pull_request, not always.
 That blocks direct pushes, while PR merges still work.
