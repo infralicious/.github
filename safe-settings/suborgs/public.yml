@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/github-community-projects/safe-settings/a9a1f366ad6a738b55682d346d94f8d6c4893b09/schema/dereferenced/suborgs.json
 # Public repos only. Rulesets work on the free plan for public repos.
 # This suborg adds rulesets to the org baseline.
 # The org baseline has no rulesets.
@@ -18,7 +19,7 @@ suborgrepos:
 # Suborg grouping keys below are commented out on purpose, not missing.
 # suborgteams: unused, org has no teams today, so no team can select repos for this suborg.
 # suborgproperties: unused, org has no custom properties today, so no property can select repos.
-# Glob patterns in suborgrepos: unused on purpose, exact repo names are clearer for eight repos.
+# Glob patterns in suborgrepos: unused on purpose, exact repo names are clearer for seven managed repos.
 # Branch protection is gone, rulesets replace it, migrated 2026-10-27.
 # Do not re-add branches here, rulesets are the only protection model now.
 # Admin repo is the one exception, it is restricted and set by hand.

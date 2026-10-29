@@ -144,3 +144,23 @@ Labels in the admin repo are not managed, admin is restricted.
 Wiki flag off hides a wiki, it does not delete wiki content.
 Branch protection removal needs manual API calls, revert does not remove it.
 Ruleset import needs exact YAML, before rulesets can be enabled.
+
+## Schema discovery, not full validation
+
+Upstream safe-settings ships JSON schemas, in schema/dereferenced/.
+Files are settings.json, suborgs.json, and repos.json.
+Upstream builds them with npm run build:schema, for API 2026-03-10.
+Upstream calls them an editor aid, not a runtime gate.
+Full validation is not possible, for 5 reasons.
+Schema uses key repositories, but our YAML uses repository.
+Runtime accepts both keys, but schema only covers repositories.
+Schema does not set additionalProperties to false, so typos pass silently.
+Schema covers API fields, not safe-settings only keys like additive_plugins.
+Schema covers security_and_analysis, but safe-settings ignores that field.
+Schema validates one file, not merged org plus suborg plus repo layers.
+Workflow schema-discovery.yml runs scripts/check-schema.py on every PR.
+Script downloads pinned schema, with same SHA as safe-settings pin.
+Script fails when a schema key is neither active nor commented.
+That forces a decision on a new feature: use it, or comment why not.
+Editor schema comments sit at top of each config file, for autocomplete.
+Update those comments on a safe-settings bump, by hand, with the new SHA.
