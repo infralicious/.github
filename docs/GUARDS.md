@@ -123,3 +123,13 @@ Guard fails on overlap, on glob patterns, and on suborgteams or suborgproperties
 Dry run cannot catch overlap, as dry run tests main, not PR.
 Scheduled new-repo check is deferred, as repo creation is rare, and org has 1 member.
 Revisit scheduled check if a second maintainer joins, or if repo creation becomes monthly.
+
+## Guard must catch breaking changes, ADR-0015
+
+Every reason a PR should not merge must be a guard check, before merge.
+Dry run tests main, not PR, so dry run cannot catch a PR change.
+Guard is the only pre-merge check for PR config, simulate checks ruleset names only.
+If you add a new config field, add a guard check for it in the same PR.
+If you change a ruleset parameter, guard must check that parameter exactly.
+Breaking reasons guard now covers: bypass always, enforcement disabled, wrong required check context, wrong integration, strict policy change, security alerts off, repo file non-identity field, tag bypass, Default parameters, and private allow_forking.
+A PR that passes guard but still breaks live sync means guard is missing a check, add that check first, then fix the config.

@@ -106,30 +106,67 @@ def check_guard():
         errors.append("baseline squash_merge_commit_title must stay PR_TITLE")
     if repo_base.get("squash_merge_commit_message") != "PR_BODY":
         errors.append("baseline squash_merge_commit_message must stay PR_BODY")
+    # Full baseline lock, 2026-10-29, ADR-0015: every baseline field must be checked, or a PR can weaken it silently.
+    # Dry run tests main, not PR, so guard is the only pre-merge check for these fields.
+    if repo_base.get("has_issues") is not True:
+        errors.append("baseline has_issues must stay true")
+    if repo_base.get("allow_squash_merge") is not True:
+        errors.append("baseline allow_squash_merge must stay true")
+    if repo_base.get("allow_merge_commit") is not True:
+        errors.append("baseline allow_merge_commit must stay true")
+    if repo_base.get("allow_rebase_merge") is not True:
+        errors.append("baseline allow_rebase_merge must stay true")
+    if repo_base.get("delete_branch_on_merge") is not True:
+        errors.append("baseline delete_branch_on_merge must stay true")
+    if repo_base.get("web_commit_signoff_required") is not False:
+        errors.append("baseline web_commit_signoff_required must stay false")
+    if repo_base.get("is_template") is not False:
+        errors.append("baseline is_template must stay false")
+    sec_base = repo_base.get("security") or {}
+    if sec_base.get("enableVulnerabilityAlerts") is not True:
+        errors.append("baseline security enableVulnerabilityAlerts must stay true")
+    if sec_base.get("enableAutomatedSecurityFixes") is not False:
+        errors.append("baseline security enableAutomatedSecurityFixes must stay false, Renovate is the updater")
     label_names = [x.get("name") for x in (base.get("labels") or [])]
     if "security" not in label_names:
         errors.append("baseline labels must include security")
-    # Protect main in public suborg: bypass pull_request, squash only, count 0
+    # Full Protect main check, 2026-10-29, ADR-0015: every rule and parameter must match, or a PR can weaken it silently.
+    EXPECTED_PR_PARAMS = {
+        "allowed_merge_methods": ["squash"],
+        "dismiss_stale_reviews_on_push": False,
+        "dismissal_restriction": {"allowed_actors": [], "enabled": False},
+        "require_code_owner_review": False,
+        "require_extra_approval_for_unattributed_changes": True,
+        "require_last_push_approval": False,
+        "required_approving_review_count": 0,
+        "required_review_thread_resolution": False,
+    }
+    def check_protect_main(pm, label, want_required):
+        if pm.get("target") != "branch":
+            errors.append(f"{label} Protect main target must stay branch")
+        if pm.get("enforcement") != "active":
+            errors.append(f"{label} Protect main enforcement must stay active")
+        bypass = pm.get("bypass_actors") or []
+        if len(bypass) != 1 or bypass[0].get("actor_type") != "RepositoryRole" or bypass[0].get("bypass_mode") != "pull_request":
+            errors.append(f"{label} Protect main bypass must stay RepositoryRole admin pull_request")
+        cond = (pm.get("conditions") or {}).get("ref_name") or {}
+        if cond.get("include") != ["refs/heads/main"] or cond.get("exclude") != []:
+            errors.append(f"{label} Protect main conditions must stay refs/heads/main only")
+        rule_types = [r.get("type") for r in (pm.get("rules") or [])]
+        want_types = ["deletion", "non_fast_forward", "pull_request"] + (["required_status_checks"] if want_required else [])
+        if rule_types != want_types:
+            errors.append(f"{label} Protect main rules must stay {want_types}, got {rule_types}")
+        pr_rules = [r for r in (pm.get("rules") or []) if r.get("type") == "pull_request"]
+        if len(pr_rules) != 1:
+            errors.append(f"{label} Protect main must hold exactly one pull_request rule")
+        elif pr_rules[0].get("parameters") != EXPECTED_PR_PARAMS:
+            errors.append(f"{label} Protect main pull_request parameters must match expected exactly, got {pr_rules[0].get('parameters')}")
     public_rules = (load_yaml("safe-settings/suborgs/public.yml").get("rulesets") or [])
     protect_main = [r for r in public_rules if r.get("name") == "Protect main"]
     if len(protect_main) != 1:
         errors.append("public suborg must hold exactly one Protect main ruleset")
     else:
-        pm = protect_main[0]
-        bypass = pm.get("bypass_actors") or []
-        if not any(b.get("bypass_mode") == "pull_request" for b in bypass):
-            errors.append("Protect main bypass must be pull_request, not always")
-        if pm.get("enforcement") != "active":
-            errors.append("Protect main enforcement must stay active")
-        pr_rules = [r for r in (pm.get("rules") or []) if r.get("type") == "pull_request"]
-        if len(pr_rules) != 1:
-            errors.append("Protect main must hold exactly one pull_request rule")
-        else:
-            params = pr_rules[0].get("parameters") or {}
-            if params.get("allowed_merge_methods") != ["squash"]:
-                errors.append("Protect main allowed_merge_methods must stay [squash] only")
-            if params.get("required_approving_review_count") != 0:
-                errors.append("Protect main required_approving_review_count must stay 0")
+        check_protect_main(protect_main[0], "public suborg", False)
     # Suborg lists, exact, private must never enter public
     public = load_yaml("safe-settings/suborgs/public.yml")
     public_repos = public.get("suborgrepos") or []
@@ -150,8 +187,7 @@ def check_guard():
             errors.append(f"{checked_path} must hold exactly one Protect main ruleset")
         else:
             pm = pm_list[0]
-            if pm.get("enforcement") != "active":
-                errors.append(f"{checked_path} Protect main enforcement must stay active")
+            check_protect_main(pm, checked_path, True)
             rc_rules = [r for r in (pm.get("rules") or []) if r.get("type") == "required_status_checks"]
             if len(rc_rules) != 1:
                 errors.append(f"{checked_path} Protect main must hold exactly one required_status_checks rule")
@@ -163,9 +199,6 @@ def check_guard():
                         errors.append(f"{checked_path} Protect main must require check {context} with integration 15368 for {repo_name}")
                 if params.get("strict_required_status_checks_policy") is not False:
                     errors.append(f"{checked_path} strict_required_status_checks_policy must stay false")
-            pr_rules = [r for r in (pm.get("rules") or []) if r.get("type") == "pull_request"]
-            if len(pr_rules) != 1 or (pr_rules[0].get("parameters") or {}).get("allowed_merge_methods") != ["squash"]:
-                errors.append(f"{checked_path} Protect main pull_request rule must stay squash only")
     if sorted(union_repos) != sorted(PUBLIC_REPOS):
         errors.append(f"public plus checked suborgs must be exactly {PUBLIC_REPOS}, got {union_repos}")
     if "rulesets" in public and public["rulesets"] is None:
@@ -220,16 +253,34 @@ def check_guard():
         if name in PRIVATE_REPOS and rulesets:
             errors.append(f"{name} is private, free plan returns 403 for rulesets")
         repo_cfg = data.get("repository") or {}
-        if repo_cfg.get("allow_auto_merge") is True:
-            errors.append(f"{name} must not set allow_auto_merge true, baseline is false")
-        if repo_cfg.get("has_wiki") is True:
-            errors.append(f"{name} must not set has_wiki true, baseline is false")
-        if repo_cfg.get("has_discussions") is True:
-            errors.append(f"{name} must not set has_discussions true, baseline is false")
-        if repo_cfg.get("has_projects") is True:
-            errors.append(f"{name} must not set has_projects true, baseline is false")
+        # Identity only, ADR-0015: a repo file must not set any non-identity repository field, or it can weaken baseline silently.
+        for key in repo_cfg.keys():
+            if key not in {"name", "description", "homepage", "private", "topics"}:
+                errors.append(f"{name} repo file must not set repository field {key}, only identity fields name, description, homepage, private, topics are allowed")
         if name in PRIVATE_REPOS and "allow_forking" in repo_cfg:
             errors.append(f"{name} must not set allow_forking at all, GitHub returns 422 for private repo PATCH when org forbids private forking, live false is via org policy, see ADR-0013")
+        # Full tag and Default ruleset checks, ADR-0015.
+        for rule in rulesets:
+            if rule.get("target") == "tag":
+                if rule.get("enforcement") != "active":
+                    errors.append(f"{name} tag ruleset {rule.get('name')} enforcement must stay active")
+                if rule.get("bypass_actors"):
+                    errors.append(f"{name} tag ruleset {rule.get('name')} bypass must stay empty")
+                if [r.get("type") for r in (rule.get("rules") or [])] != ["deletion", "non_fast_forward", "update"]:
+                    errors.append(f"{name} tag ruleset {rule.get('name')} rules must stay deletion, non_fast_forward, update")
+                cond = (rule.get("conditions") or {}).get("ref_name") or {}
+                if cond.get("include") not in [["refs/tags/*"], ["refs/tags/v*"]] or cond.get("exclude") != []:
+                    errors.append(f"{name} tag ruleset {rule.get('name')} conditions must stay refs/tags/* or refs/tags/v* only")
+            if rule.get("name") == "Default":
+                if rule.get("target") != "branch" or rule.get("enforcement") != "active" or rule.get("bypass_actors"):
+                    errors.append(f"{name} Default ruleset must stay branch, active, bypass empty")
+                if [r.get("type") for r in (rule.get("rules") or [])] != ["deletion", "non_fast_forward", "pull_request"]:
+                    errors.append(f"{name} Default ruleset rules must stay deletion, non_fast_forward, pull_request")
+                pr_rules = [r for r in (rule.get("rules") or []) if r.get("type") == "pull_request"]
+                if len(pr_rules) == 1:
+                    dparams = pr_rules[0].get("parameters") or {}
+                    if dparams.get("allowed_merge_methods") != ["merge", "squash", "rebase"] or dparams.get("required_approving_review_count") != 0:
+                        errors.append(f"{name} Default pull_request parameters must stay merge, squash, rebase, count 0")
         for rule in rulesets:
             if rule.get("enforcement") != "active":
                 errors.append(f"{name} ruleset {rule.get('name')} enforcement must stay active")
