@@ -3,10 +3,13 @@
 # All other fields come from the baseline and the private suborg.
 # Private stays true on purpose.
 # That setting lets sync revert an accidental public flip.
+# allow_forking false, 2026-10-29: private repo must not be forked to a personal account.
+# Public repos keep forking on via default, baseline does not set allow_forking.
 repository:
   name: service-control-policies
   description: service-control-policies or SCPs
   private: true
+  allow_forking: false
 
 # No rulesets here, private repos have no rulesets on the free plan.
 # Push rulesets also return 403 for private repos on the free plan, verified 2026-10-27.

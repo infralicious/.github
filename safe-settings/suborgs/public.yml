@@ -4,9 +4,13 @@
 # The org baseline has no rulesets.
 # That split keeps private repos out of branch ruleset failures.
 # Rulesets for all six public repos, migrated 2026-10-27.
-# Rulesets use the same weak settings as old branch protection.
+# Improved 2026-10-29: bypass pull_request for branches, squash only merges.
 # No required reviews, no required checks, for the sole maintainer.
 # Rulesets still block force push and deletion, for main.
+# Required checks are per repo only, not in this shared ruleset.
+# A shared required check would block saas and terraform, which have no workflows.
+# Verified job names for a follow-up are test for actions-checkout and htmlproofer for site.
+# That follow-up needs a suborg split or a tested repo override, so it is not in this change.
 # Baseline repo settings, labels, and alerts still apply to all installed repos.
 # Rulesets apply only when the App is installed on a repo.
 suborgrepos:
@@ -30,7 +34,7 @@ rulesets:
     bypass_actors:
       - actor_type: RepositoryRole
         name: admin
-        bypass_mode: always
+        bypass_mode: pull_request
     conditions:
       ref_name:
         include:
@@ -39,3 +43,16 @@ rulesets:
     rules:
       - type: deletion
       - type: non_fast_forward
+      - type: pull_request
+        parameters:
+          allowed_merge_methods:
+            - squash
+          dismiss_stale_reviews_on_push: false
+          dismissal_restriction:
+            allowed_actors: []
+            enabled: false
+          require_code_owner_review: false
+          require_extra_approval_for_unattributed_changes: true
+          require_last_push_approval: false
+          required_approving_review_count: 0
+          required_review_thread_resolution: false
