@@ -13,7 +13,8 @@ repository:
 # Tag protection was manual before, now it is in code, with the same rules.
 # Tag protection covers tags v*, with deletion, non-fast-forward, and update rules.
 # Bypass actors are empty on purpose, to match live, no one can bypass tag rules.
-# Protect main comes from the public suborg, it is not listed here again.
+# Protect main comes from public-actions-checkout suborg, with required check test, not from public suborg.
+# Protect main is not listed here again, to avoid a duplicate ruleset name for this repo.
 rulesets:
   - name: Tag protection
     target: tag
