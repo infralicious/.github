@@ -9,4 +9,4 @@ All docs use Simplified Technical English, short sentences, active voice.
 - GUARDS.md: Every footgun, and its guard, in one place.
 - DISASTER-RECOVERY.md: Loss recovery, admin repo, App, key, ruleset, bad config.
 - adrs/README.md: Decision records index, immutable, supersede, do not edit.
-- app-manifest.json: GitHub App manifest, no secrets, for a new org.
+- apps/: GitHub App manifests, no secrets, source of truth for App permissions.

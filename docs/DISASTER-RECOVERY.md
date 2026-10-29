@@ -31,7 +31,7 @@ Test with a dry run pull request, then a live sync.
 
 ## App deleted
 
-Create a new App, see docs/app-manifest.json for permissions.
+Create a new App, see apps/infralicious-safe-settings.json for permissions.
 Install the new App on all org repos, in scope.
 Update vars `SAFE_SETTINGS_APP_ID` and `SAFE_SETTINGS_GITHUB_CLIENT_ID`.
 Update secrets, with the new private key and client secret.
@@ -72,7 +72,7 @@ A merge, an issue, or a comment counts as activity, a run does not.
 ## New org, repeat from scratch
 
 Use docs/SETUP.md, with a new App, new vars, and new secrets.
-Copy docs/app-manifest.json, change only the name and the URL.
+Copy apps/infralicious-safe-settings.json, change only the name and the URL.
 Do not copy App IDs, keys, or secrets from another org.
 Replace the org login, the repo lists, and the restricted list, for the new org.
 Run the guard script, before the first live sync, in the new org.

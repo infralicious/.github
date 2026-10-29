@@ -1,0 +1,20 @@
+name: App Drift Check
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Run weekly, on Monday at 09:00 UTC.
+    # That time catches live UI drift, with no manifest change.
+    - cron: "0 9 * * 1"
+jobs:
+  appDrift:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Check GitHub App permissions against manifests
+        run: python3 scripts/check-apps.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
