@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/github-community-projects/safe-settings/a9a1f366ad6a738b55682d346d94f8d6c4893b09/schema/dereferenced/repos.json
 # Rulesets for awesome-service-control-policies, migrated 2026-10-27.
 # No repository fields live here, only rulesets, so identity stays unchanged.
 

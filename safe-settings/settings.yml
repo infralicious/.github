@@ -1,11 +1,14 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/github-community-projects/safe-settings/a9a1f366ad6a738b55682d346d94f8d6c4893b09/schema/dereferenced/settings.json
+# Editor schema only, see scripts/check-schema.py for limits.
+# Schema uses key repositories, our YAML uses repository, runtime accepts both.
 # Baseline for all managed repos in infralicious.
 # Safe-settings merges this file with suborg files and repo files.
 # Repo files win on conflict. Suborg files sit in between.
 # Identity fields stay out of this file on purpose.
 # Name, description, homepage, private, and topics live in repos/*.yml.
 # That choice stops the baseline from wiping a repo identity.
-# Branch rules stay out of this file on purpose.
-# Branch rules live in suborgs/public.yml only.
+# Rulesets stay out of org baseline on purpose.
+# Rulesets live in suborgs/public.yml and repos/*.yml only.
 # A suborg file cannot strip a rule set at the org level.
 # Private repos would then fail every sync with a 403 error.
 # Labels: this list is the baseline, not a complete list anymore.
@@ -48,6 +51,34 @@ repository:
 # archived: unused on purpose, absent means archive state stays unchanged, false would unarchive a repo archived on purpose later.
 # force_create: unused on purpose, creating repos from YAML is high risk, create repos by hand.
 # template: unused, only applies with force_create, no template repos are used here.
+# Branches, legacy branch protection, commented out on purpose, not missing.
+# Rulesets replace branch protection, migrated 2026-10-27, do not re-add branches.
+# A branches block here would fight rulesets, and private repos would fail with 403.
+# branches:
+#   - name: main
+#     protection:
+#       required_status_checks: null
+#       enforce_admins: false
+#       required_pull_request_reviews: null
+#       restrictions: null
+
+# Ruleset scope, commented out on purpose, not missing.
+# Default scope is repo, and that fits a free org.
+# Org scope needs Team or Enterprise, and needs suborgproperties, so it cannot run here.
+# ruleset_scope: repo
+
+# Repository fields below are also commented out on purpose, not missing.
+# has_pull_requests: unused, PRs stay on, disabling PRs would block contributions.
+# pull_request_creation_policy: unused, PRs from forks stay on, no restriction is needed.
+# use_squash_pr_title_as_default: unused, default commit message text is fine today.
+# squash_merge_commit_title: unused, same reason, default text is fine today.
+# squash_merge_commit_message: unused, same reason, default text is fine today.
+# merge_commit_title: unused, same reason, default text is fine today.
+# merge_commit_message: unused, same reason, default text is fine today.
+# allow_forking: unused, forking stays on, forking is expected for open source.
+# security_and_analysis: unused in safe-settings, safe-settings ignores this field.
+# Security scanning and push protection live in security.json, handled by scripts/security.js.
+
 labels:
   - name: bug
     color: d73a4a
@@ -89,8 +120,9 @@ labels:
 additive_plugins:
   - labels
 # Additive mode for other Diffable plugins is unused on purpose.
-# Additive only matters when a plugin runs, and teams, collaborators, environments, and rulesets do not run here.
-# additive_plugins for those plugins would change nothing today, add one only when its plugin is enabled.
+# Teams, collaborators, and environments do not run here, so additive for them changes nothing.
+# Additive rulesets is unused on purpose, Diffable deletion must remove unlisted rulesets.
+# Additive rulesets would keep a manual ruleset alive, and weaken enforcement, so do not add it.
 # disable_plugins, commented out on purpose.
 # Every enabled plugin is wanted, disabling a plugin would hide a config section silently.
 # disable_plugins:
@@ -163,10 +195,10 @@ additive_plugins:
 # validator:
 #   pattern: "[a-zA-Z0-9_.-]+"
 
-# Rulesets, commented out on purpose, see public suborg and actions-checkout repo file for the reason.
+# Rulesets, commented out in org baseline on purpose, see public suborg for the reason.
 # Ruleset sync in normal mode deletes rulesets not listed here.
-# Manual rulesets already exist: Tag protection on actions-checkout, Default branch ruleset on terraform.
-# Do not enable rulesets here until those manual rulesets are imported into YAML exactly.
+# Main ruleset lives in suborgs/public.yml, tag rulesets live in repos/*.yml.
+# Org baseline has no rulesets, so private repos stay out of ruleset sync, and avoid 403 errors.
 # rulesets:
 #   - name: example-ruleset
 #     target: branch

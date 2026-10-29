@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/github-community-projects/safe-settings/a9a1f366ad6a738b55682d346d94f8d6c4893b09/schema/dereferenced/suborgs.json
 # Private repos only. This suborg has no branch rules on purpose.
 # Branch protection fails on private repos on the free plan.
 # The API returns 403 for branch protection on private free repos.
