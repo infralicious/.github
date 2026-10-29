@@ -182,8 +182,8 @@ def check_guard():
             errors.append(f"{name} must not set has_discussions true, baseline is false")
         if repo_cfg.get("has_projects") is True:
             errors.append(f"{name} must not set has_projects true, baseline is false")
-        if name in PRIVATE_REPOS and repo_cfg.get("allow_forking") is True:
-            errors.append(f"{name} must not set allow_forking true, private repo must not fork")
+        if name in PRIVATE_REPOS and "allow_forking" in repo_cfg:
+            errors.append(f"{name} must not set allow_forking at all, GitHub returns 422 for private repo PATCH when org forbids private forking, live false is via org policy, see ADR-0013")
         for rule in rulesets:
             if rule.get("enforcement") != "active":
                 errors.append(f"{name} ruleset {rule.get('name')} enforcement must stay active")

@@ -84,8 +84,9 @@ repository:
 # use_squash_pr_title_as_default: unused, deprecated, squash_merge_commit_title PR_TITLE covers it.
 # merge_commit_title: unused, Protect main allows squash only, merge commits do not run for main.
 # merge_commit_message: unused, same reason as merge_commit_title.
-# allow_forking: unused in baseline, forking stays on for public repos, off for private repo.
-# allow_forking is set only in service-control-policies.yml, to false, never in baseline.
+# allow_forking: unused in baseline, and unused for private repos, see ADR-0013.
+# Public repos keep forking on via default, private forking is off via org policy.
+# Do not set allow_forking for a private repo, GitHub returns 422 on PATCH.
 # security_and_analysis: unused in safe-settings, safe-settings ignores this field.
 # Security scanning and push protection live in security.json, handled by scripts/security.js.
 
