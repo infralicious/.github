@@ -16,3 +16,7 @@ jobs:
         run: node --test scripts/security.test.js
       - name: Check Python guard compiles
         run: python3 -m py_compile scripts/check-config.py
+      - name: Check App drift script compiles
+        run: python3 -m py_compile scripts/check-apps.py
+      - name: Run App drift unit tests, no dependency
+        run: python3 scripts/check-apps.test.py
