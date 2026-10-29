@@ -75,6 +75,6 @@ Use hyphens, or restructure a sentence, instead of em dashes.
 - scripts/check-config.py is the single guard source, local and CI use the same script.
 - Config Guard workflow runs guard and simulate on every PR to main.
 - Simulate reads live rulesets, read only, and fails on missing required or protected deletion.
-- Admin ruleset requires safeSettingsDryRun, validateConfig, configGuard, prConfigSimulation, securityDryRun, scriptTests, live from 2026-10-27.
+- Admin ruleset requires safeSettingsDryRun, validateConfig, configGuard, prConfigSimulation, securityDryRun, scriptTests, schemaDiscovery, live from 2026-10-27.
 - Admin main bypass is pull_request, not always, direct pushes to admin main are blocked.
 - Pre-commit is optional, CI is the gate, phone-first work cannot run pre-commit.

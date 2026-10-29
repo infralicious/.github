@@ -46,7 +46,7 @@ Conditions: refs/heads/main only.
 Rules: deletion, non_fast_forward, pull_request, required_status_checks.
 Pull request: count 0, dismiss stale false, code owner false.
 Pull request: last push false, thread resolution false.
-Required checks: safeSettingsDryRun, validateConfig, configGuard, prConfigSimulation, securityDryRun, scriptTests.
+Required checks: safeSettingsDryRun, validateConfig, configGuard, prConfigSimulation, securityDryRun, scriptTests, schemaDiscovery.
 Integration for all checks: 15368, GitHub Actions.
 Bypass: RepositoryRole admin, bypass_mode pull_request.
 Verify by API, after creation, and check that legacy protection is absent.
