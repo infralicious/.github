@@ -3,18 +3,17 @@
 # This suborg adds rulesets to the org baseline.
 # The org baseline has no rulesets.
 # That split keeps private repos out of branch ruleset failures.
-# Rulesets for five public repos without required checks, migrated 2026-10-27.
+# Rulesets for four public repos without required checks, migrated 2026-10-27.
 # Actions-checkout moved out, 2026-10-29, to public-actions-checkout.yml, for required check test.
+# Site moved out, 2026-10-29, to public-infralicious.github.io.yml, for required check htmlproofer.
 # Improved 2026-10-29: bypass pull_request for branches, squash only merges.
 # No required reviews, no required checks, for the sole maintainer.
 # Rulesets still block force push and deletion, for main.
 # Required checks are per repo only, not in this shared ruleset.
 # A shared required check would block saas and terraform, which have no workflows.
-# Site follow-up is pending, job htmlproofer, as its own dedicated suborg, later.
 # Baseline repo settings, labels, and alerts still apply to all installed repos.
 # Rulesets apply only when the App is installed on a repo.
 suborgrepos:
-  - infralicious.github.io
   - awesome-service-control-policies
   - saas-auth-wall-of-shame
   - terraform-aws-securityhub-batchupdatefindings
