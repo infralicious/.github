@@ -3,8 +3,9 @@
 # This suborg adds rulesets to the org baseline.
 # The org baseline has no rulesets.
 # That split keeps private repos out of branch ruleset failures.
-# Rulesets for five public repos without required checks, migrated 2026-10-27.
+# Rulesets for six public repos without required checks, migrated 2026-10-27.
 # Coderabbit added 2026-10-30, public CodeRabbit config repo, no workflows, no required checks.
+# Template added 2026-10-30, public generic template repo, with workflows, no required checks.
 # Actions-checkout moved out, 2026-10-29, to public-actions-checkout.yml, for required check test.
 # Site moved out, 2026-10-29, to public-infralicious.github.io.yml, for required check htmlproofer.
 # Improved 2026-10-29: bypass pull_request for branches, squash only merges.
@@ -20,10 +21,11 @@ suborgrepos:
   - saas-auth-wall-of-shame
   - terraform-aws-securityhub-batchupdatefindings
   - renovate-config
+  - template
 # Suborg grouping keys below are commented out on purpose, not missing.
 # suborgteams: unused, org has no teams today, so no team can select repos for this suborg.
 # suborgproperties: unused, org has no custom properties today, so no property can select repos.
-# Glob patterns in suborgrepos: unused on purpose, exact repo names are clearer for seven managed repos.
+# Glob patterns in suborgrepos: unused on purpose, exact repo names are clearer for eight managed repos.
 # Branch protection is gone, rulesets replace it, migrated 2026-10-27.
 # Do not re-add branches here, rulesets are the only protection model now.
 # Admin repo is the one exception, it is restricted and set by hand.
