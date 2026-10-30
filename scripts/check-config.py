@@ -27,7 +27,6 @@ PUBLIC_REPOS = [
 ]
 PUBLIC_NO_CHECK_REPOS = [
     "awesome-service-control-policies",
-    "infralicious.github.io",
     "renovate-config",
     "saas-auth-wall-of-shame",
     "terraform-aws-securityhub-batchupdatefindings",
@@ -36,6 +35,9 @@ PUBLIC_NO_CHECK_REPOS = [
 CHECKED_SUBORGS = {
     "safe-settings/suborgs/public-actions-checkout.yml": {
         "actions-checkout": "test",
+    },
+    "safe-settings/suborgs/public-infralicious.github.io.yml": {
+        "infralicious.github.io": "htmlproofer",
     },
 }
 PRIVATE_REPOS = ["service-control-policies"]
