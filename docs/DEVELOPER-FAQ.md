@@ -43,7 +43,7 @@ A repo belongs to exactly one suborg, for rulesets, or safe-settings throws a ha
 Admin repo .github is restricted, it is not managed by safe-settings, it is set by hand.
 
 Current suborgs, as of 2026-10-29:
-- public.yml: four repos, no required checks, Protect main only.
+- public.yml: five repos, no required checks, Protect main only, including coderabbit, added 2026-10-30.
 - public-actions-checkout.yml: actions-checkout only, Protect main plus test check.
 - public-infralicious.github.io.yml: site only, Protect main plus htmlproofer check.
 - private.yml: service-control-policies only, no rulesets, free plan returns 403 for rulesets.
@@ -90,7 +90,7 @@ For a required check, add a required_status_checks rule, with context, integrati
 Update guard in scripts/check-config.py, in the same PR, or guard will fail on the new file.
 Add the new file to CHECKED_SUBORGS, if it has a required check, with repo and context.
 Update PUBLIC_NO_CHECK_REPOS, if you move a repo out of public.yml, and check the union.
-Union of public and checked suborgs must equal all six public repos, guard checks this.
+Union of public and checked suborgs must equal all seven public repos, guard checks this.
 Update simulate, if needed, simulate now reads all suborg files, so no change is usually needed.
 Update docs, ARCHITECTURE.md and GUARDS.md, and add an ADR, if the decision is hard to reverse.
 Open a PR, wait for checks, merge after a tap, dispatch a live sync, verify live.

@@ -3,7 +3,8 @@
 # This suborg adds rulesets to the org baseline.
 # The org baseline has no rulesets.
 # That split keeps private repos out of branch ruleset failures.
-# Rulesets for four public repos without required checks, migrated 2026-10-27.
+# Rulesets for five public repos without required checks, migrated 2026-10-27.
+# Coderabbit added 2026-10-30, public CodeRabbit config repo, no workflows, no required checks.
 # Actions-checkout moved out, 2026-10-29, to public-actions-checkout.yml, for required check test.
 # Site moved out, 2026-10-29, to public-infralicious.github.io.yml, for required check htmlproofer.
 # Improved 2026-10-29: bypass pull_request for branches, squash only merges.
@@ -15,6 +16,7 @@
 # Rulesets apply only when the App is installed on a repo.
 suborgrepos:
   - awesome-service-control-policies
+  - coderabbit
   - saas-auth-wall-of-shame
   - terraform-aws-securityhub-batchupdatefindings
   - renovate-config
