@@ -36,7 +36,10 @@ repository:
 # Renovate is the primary updater where it runs.
 # Auto-fix on would duplicate Renovate pull requests.
 # Repos without Renovate need a manual fix for an alert.
-  web_commit_signoff_required: false
+  web_commit_signoff_required: true
+# Signoff true, 2026-10-30: org enforces signoff, PATCH false returns 422, sync run 41035007238 failed.
+# Web signoff applies to web UI commits only, not to local git pushes, so local work is unchanged.
+# Do not set false again, unless org signoff is disabled first, in the UI, then change this file in the same change.
   allow_auto_merge: false
   allow_update_branch: true
   has_discussions: false

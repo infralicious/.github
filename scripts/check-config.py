@@ -20,6 +20,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PUBLIC_REPOS = [
     "actions-checkout",
     "awesome-service-control-policies",
+    "coderabbit",
     "infralicious.github.io",
     "renovate-config",
     "saas-auth-wall-of-shame",
@@ -27,6 +28,7 @@ PUBLIC_REPOS = [
 ]
 PUBLIC_NO_CHECK_REPOS = [
     "awesome-service-control-policies",
+    "coderabbit",
     "renovate-config",
     "saas-auth-wall-of-shame",
     "terraform-aws-securityhub-batchupdatefindings",
@@ -120,8 +122,8 @@ def check_guard():
         errors.append("baseline allow_rebase_merge must stay true")
     if repo_base.get("delete_branch_on_merge") is not True:
         errors.append("baseline delete_branch_on_merge must stay true")
-    if repo_base.get("web_commit_signoff_required") is not False:
-        errors.append("baseline web_commit_signoff_required must stay false")
+    if repo_base.get("web_commit_signoff_required") is not True:
+        errors.append("baseline web_commit_signoff_required must stay true, org enforces signoff, false returns 422")
     if repo_base.get("is_template") is not False:
         errors.append("baseline is_template must stay false")
     sec_base = repo_base.get("security") or {}
