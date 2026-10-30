@@ -20,3 +20,8 @@ Template: Title, Date, Status, Context, Decision, Consequences, Alternatives.
 - ADR-0009: Enable secret scanning per repo, not org config alone.
 - ADR-0010: Dry run tests main, not PR, so simulate script is required.
 - ADR-0011: Enable secret scanning on admin repo itself.
+- ADR-0012: Managed ruleset hardening and repository field locking.
+- ADR-0013: Private allow_forking must not be set via safe-settings.
+- ADR-0014: Actions-checkout required check via dedicated suborg.
+- ADR-0015: Required PR checks must catch breaking changes.
+- ADR-0016: Site required check via dedicated suborg.
