@@ -27,6 +27,8 @@ jobs:
             renovate-config
             saas-auth-wall-of-shame
             terraform-aws-securityhub-batchupdatefindings
+            coderabbit
+            template
       - name: Run security dry run, no live change
         run: node scripts/security.js --dry-run
         env:
