@@ -1,0 +1,16 @@
+{
+  "name": "infralicious-zizmor",
+  "url": "https://github.com/infralicious/.github",
+  "description": "Central zizmor audit for infralicious, report only",
+  "public": false,
+  "hook_attributes": {
+    "active": false
+  },
+  "redirect_url": "https://github.com/infralicious/.github",
+  "default_permissions": {
+    "contents": "read",
+    "metadata": "read",
+    "security_events": "write"
+  },
+  "default_events": []
+}
