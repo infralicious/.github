@@ -5,6 +5,7 @@ on:
 jobs:
   configGuard:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -13,6 +14,7 @@ jobs:
         run: python3 scripts/check-config.py guard
   prConfigSimulation:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
