@@ -9,5 +9,6 @@ All docs use Simplified Technical English, short sentences, active voice.
 - GUARDS.md: Every footgun, and its guard, in one place.
 - DEVELOPER-FAQ.md: Use cases for developers, global, suborg, new suborg, repo override, and FAQ.
 - DISASTER-RECOVERY.md: Loss recovery, admin repo, App, key, ruleset, bad config.
+- BEST-PRACTICES.md: Best practices followed, gaps, and practices that do not apply, with reasons, for admin repo and org only.
 - adrs/README.md: Decision records index, immutable, supersede, do not edit.
 - apps/: GitHub App manifests, no secrets, source of truth for App permissions.
