@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Check last successful Safe Settings Sync run, open an issue if missing.
+Workflow id 397443686 is Safe Settings Sync, verified by API, 2026-11-02.
 
 No external deps. Uses gh CLI, with GITHUB_TOKEN, or gh auth.
 Exit 0 if sync is fresh, or if an issue already exists.
