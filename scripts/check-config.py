@@ -24,6 +24,7 @@ PUBLIC_REPOS = [
     "infralicious.github.io",
     "renovate-config",
     "saas-auth-wall-of-shame",
+    "template",
     "terraform-aws-securityhub-batchupdatefindings",
 ]
 PUBLIC_NO_CHECK_REPOS = [
@@ -31,6 +32,7 @@ PUBLIC_NO_CHECK_REPOS = [
     "coderabbit",
     "renovate-config",
     "saas-auth-wall-of-shame",
+    "template",
     "terraform-aws-securityhub-batchupdatefindings",
 ]
 # Dedicated checked suborgs: file -> {repo: required check context}
