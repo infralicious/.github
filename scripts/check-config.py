@@ -330,6 +330,26 @@ def check_guard():
                     errors.append(f'security.json {name} {key} must be enabled or disabled, got {val}')
     except Exception as e:
         errors.append(f'security.json parse fail: {e}')
+    # Security dry run App token list must match security.json, 2026-11-02, PR 46 bug.
+    # PR 46 added coderabbit and template to security.json, but not to App token list.
+    # CI then saw those repos as disabled, always, and securityDryRun failed, even after live apply.
+    # Guard must fail on mismatch, so a future new repo cannot repeat that bug.
+    try:
+        dry = load_yaml('.github/workflows/security-dry-run.yml')
+        token_repos = set()
+        for step in (dry.get('jobs') or {}).get('securityDryRun', {}).get('steps') or []:
+            with_block = step.get('with') or {}
+            repos_text = with_block.get('repositories') or ''
+            for line in str(repos_text).splitlines():
+                name = line.strip()
+                if name:
+                    token_repos.add(name)
+        sec2 = json.load(open('security.json'))
+        want_repos = {n for n, v in (sec2.get('repos') or {}).items() if v.get('private') is not True}
+        if token_repos != want_repos:
+            errors.append(f'security dry run App token repos must match security.json public repos, token {sorted(token_repos)}, want {sorted(want_repos)}')
+    except Exception as e:
+        errors.append(f'security token list check fail: {e}')
     # ADR format, each ADR must hold Status, Date, Context, Decision, Consequences
     for adr in sorted(glob.glob('docs/adrs/0*.md')):
         text = open(adr).read()
