@@ -5,6 +5,7 @@ on:
 jobs:
   securityDryRun:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: read
     steps:
@@ -16,9 +17,12 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          app-id: ${{ vars.SAFE_SETTINGS_APP_ID }}
+          client-id: ${{ vars.SAFE_SETTINGS_GITHUB_CLIENT_ID }}
           private-key: ${{ secrets.SAFE_SETTINGS_PRIVATE_KEY }}
           owner: infralicious
+          permission-administration: read
+          permission-contents: read
+          permission-metadata: read
           repositories: |
             .github
             actions-checkout
@@ -27,6 +31,8 @@ jobs:
             renovate-config
             saas-auth-wall-of-shame
             terraform-aws-securityhub-batchupdatefindings
+            coderabbit
+            template
       - name: Run security dry run, no live change
         run: node scripts/security.js --dry-run
         env:

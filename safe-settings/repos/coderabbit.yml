@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/github-community-projects/safe-settings/a9a1f366ad6a738b55682d346d94f8d6c4893b09/schema/dereferenced/repos.json
+# Override for coderabbit. Only identity fields live here.
+# All other fields come from the baseline in settings.yml.
+# Coderabbit is a public CodeRabbit config repo, created 2026-10-30, no workflows.
+# No description, homepage, or topics are set here, live values stay unchanged.
+repository:
+  name: coderabbit
+  private: false
+
+# Tag ruleset for this repo, added 2026-10-30, to match other public repos.
+# Protect tags covers all tags, with deletion, non-fast-forward, and update rules.
+# Bypass actors are empty on purpose, to match actions-checkout Tag protection.
+# Tag creation still works, no creation rule exists in this ruleset.
+# Deletion and update are blocked even for admin, by design.
+# Protect main comes from the public suborg, it is not listed here again.
+rulesets:
+  - name: Protect tags
+    target: tag
+    enforcement: active
+    bypass_actors: []
+    conditions:
+      ref_name:
+        include:
+          - refs/tags/*
+        exclude: []
+    rules:
+      - type: deletion
+      - type: non_fast_forward
+      - type: update

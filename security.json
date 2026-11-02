@@ -30,6 +30,14 @@
     "terraform-aws-securityhub-batchupdatefindings": {
       "secret_scanning": "enabled",
       "secret_scanning_push_protection": "enabled"
+    },
+    "coderabbit": {
+      "secret_scanning": "enabled",
+      "secret_scanning_push_protection": "enabled"
+    },
+    "template": {
+      "secret_scanning": "enabled",
+      "secret_scanning_push_protection": "enabled"
     }
   }
 }

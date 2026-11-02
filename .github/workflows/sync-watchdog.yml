@@ -1,0 +1,22 @@
+name: Sync Watchdog
+on:
+  schedule:
+    - cron: "30 * * * *"
+  workflow_dispatch:
+jobs:
+  syncWatchdog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check last successful sync, open issue if missing
+        run: python3 scripts/sync-watchdog.py
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          MAX_AGE_HOURS: "8"

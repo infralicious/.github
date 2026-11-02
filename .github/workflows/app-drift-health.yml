@@ -1,0 +1,40 @@
+name: App Drift Health
+on:
+  workflow_run:
+    workflows: [App Drift Check]
+    types: [completed]
+jobs:
+  appDriftHealth:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Open issue on app-drift failure, close on success, dedupe by title
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          TITLE="App Drift Check failed: run $RUN_ID"
+          OPEN_TITLE="App Drift Check failed"
+          if [ "$CONCLUSION" = "success" ]; then
+            for N in $(gh api "repos/${{ github.repository }}/issues?state=open" --jq ".[] | select(.title | startswith(\"$OPEN_TITLE\")) | .number"); do
+              gh api -X PATCH "repos/${{ github.repository }}/issues/$N" -f state=closed -f body="Closed after a successful App Drift Check run. See run $RUN_URL." --jq '.number'
+              echo "Closed issue $N"
+            done
+            echo "App drift success, closed open failure issues, if any"
+            exit 0
+          fi
+          if [ "$CONCLUSION" != "failure" ]; then
+            echo "Conclusion $CONCLUSION, no alert needed"
+            exit 0
+          fi
+          EXISTING=$(gh api "repos/${{ github.repository }}/issues?state=open" --jq ".[] | select(.title | startswith(\"$OPEN_TITLE\")) | .number" | head -n 1)
+          if [ -n "$EXISTING" ]; then
+            echo "Issue already open: $EXISTING, skip duplicate"
+            exit 0
+          fi
+          gh api -X POST "repos/${{ github.repository }}/issues" -f title="$TITLE" -f body="App Drift Check failed. Run: $RUN_URL. Fix App manifest drift, then run App Drift Check again, and verify live. Close this issue after a successful App Drift Check run." --jq '.html_url'

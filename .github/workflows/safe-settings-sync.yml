@@ -1,7 +1,7 @@
 name: Safe Settings Sync
 on:
   schedule:
-    - cron: "0 */4 * * *"
+    - cron: "17 */4 * * *"
   workflow_dispatch:
 concurrency:
   group: safe-settings-sync
@@ -9,6 +9,7 @@ concurrency:
 jobs:
   safeSettingsSync:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
     env:
