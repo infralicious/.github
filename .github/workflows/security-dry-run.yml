@@ -19,6 +19,9 @@ jobs:
           app-id: ${{ vars.SAFE_SETTINGS_APP_ID }}
           private-key: ${{ secrets.SAFE_SETTINGS_PRIVATE_KEY }}
           owner: infralicious
+          permission-administration: read
+          permission-contents: read
+          permission-metadata: read
           repositories: |
             .github
             actions-checkout
