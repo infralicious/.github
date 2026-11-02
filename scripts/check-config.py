@@ -124,8 +124,8 @@ def check_guard():
         errors.append("baseline allow_rebase_merge must stay true")
     if repo_base.get("delete_branch_on_merge") is not True:
         errors.append("baseline delete_branch_on_merge must stay true")
-    if repo_base.get("web_commit_signoff_required") is not True:
-        errors.append("baseline web_commit_signoff_required must stay true, org enforces signoff, false returns 422")
+    if "web_commit_signoff_required" in repo_base:
+        errors.append("baseline must not set web_commit_signoff_required at all, org enforces signoff, GitHub rejects any PATCH that includes the field, see ADR-0018")
     if repo_base.get("is_template") is not False:
         errors.append("baseline is_template must stay false")
     sec_base = repo_base.get("security") or {}
