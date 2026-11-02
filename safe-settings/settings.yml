@@ -36,11 +36,12 @@ repository:
 # Renovate is the primary updater where it runs.
 # Auto-fix on would duplicate Renovate pull requests.
 # Repos without Renovate need a manual fix for an alert.
-# web_commit_signoff_required is absent on purpose, 2026-11-02, see ADR-0018.
+# web_commit_signoff_required: true
+# Commented out on purpose, 2026-11-02, see ADR-0018, not active.
 # Org enforces signoff, live value stays true, by org policy.
 # GitHub rejects any repo PATCH that includes this field, when org enforces it.
 # PATCH true also returns 422, for a new repo, see sync run 41100158831.
-# Safe-settings must never send this field, so baseline must not set it.
+# Safe-settings must never send this field, so baseline must not set it active.
 # Web signoff applies to web UI commits only, not to local git pushes.
   allow_auto_merge: false
   allow_update_branch: true
