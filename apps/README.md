@@ -48,10 +48,27 @@ Submit the manifest in the GitHub App creation flow.
 Install the new App, then update App ID and secrets.
 Do not copy App IDs, keys, or secrets from another App.
 
+## Pending App: infralicious-zizmor
+
+This manifest does not create a live App by itself.
+Submit this manifest in the GitHub App creation flow.
+Use an org owner account, and keep the App private.
+Install the App on all org repos, after creation.
+Set admin var ZIZMOR_APP_ID, after creation.
+Set admin secret ZIZMOR_PRIVATE_KEY, by secure entry only.
+Never put the private key in chat, in a file, or in memory.
+Do not merge PR 49 before the App, the var, and the secret exist.
+Local app mode check fails for this App, until the App exists.
+CI drift check still passes, it checks safe-settings only.
+GitHub rejects hook_attributes with active false and no URL.
+This manifest omits hook_attributes, so webhook stays inactive by omission.
+
 ## Notes for each App
 
 - infralicious-safe-settings: permissions match the live App today.
 - infralicious-renovate: permissions match the live App today.
+- infralicious-zizmor: manifest only, App does not exist yet.
+- infralicious-zizmor: permissions match the PR 49 workflow needs.
 - Renovate manifest uses vulnerability_alerts read.
 - GitHub UI shows that permission as Dependabot alerts.
 - The API key and the UI label name the same permission.
