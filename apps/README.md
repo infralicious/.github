@@ -60,6 +60,8 @@ Never put the private key in chat, in a file, or in memory.
 Do not merge PR 49 before the App, the var, and the secret exist.
 Local app mode check fails for this App, until the App exists.
 CI drift check still passes, it checks safe-settings only.
+GitHub rejects hook_attributes with active false and no URL.
+This manifest omits hook_attributes, so webhook stays inactive by omission.
 
 ## Notes for each App
 
