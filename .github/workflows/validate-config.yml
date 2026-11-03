@@ -2,6 +2,8 @@ name: Validate Config
 on:
   pull_request:
     branches: [main]
+permissions:
+  contents: read
 jobs:
   validateConfig:
     runs-on: ubuntu-latest

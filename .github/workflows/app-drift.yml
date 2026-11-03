@@ -7,6 +7,8 @@ on:
     # Run on business days, Monday to Friday at 09:00 UTC.
     # That time catches live UI drift, with no manifest change.
     - cron: "0 9 * * 1-5"
+permissions:
+  contents: read
 jobs:
   appDrift:
     runs-on: ubuntu-latest

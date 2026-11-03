@@ -6,6 +6,8 @@ on:
 # A paths filter left docs and workflow PRs with no required check.
 # That blocked merges, and forced an admin merge for PR 3.
 # Dry run is NOP mode, it makes no live changes, so it is safe for all PRs.
+permissions:
+  contents: read
 concurrency:
   group: safe-settings-dry-run
   cancel-in-progress: false

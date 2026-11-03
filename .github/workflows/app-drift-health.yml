@@ -3,6 +3,9 @@ on:
   workflow_run:
     workflows: [App Drift Check]
     types: [completed]
+permissions:
+  contents: read
+  issues: write
 jobs:
   appDriftHealth:
     runs-on: ubuntu-latest

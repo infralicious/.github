@@ -2,6 +2,8 @@ name: Script Tests
 on:
   pull_request:
     branches: [main]
+permissions:
+  contents: read
 jobs:
   scriptTests:
     runs-on: ubuntu-latest
