@@ -1,9 +1,9 @@
 # Central zizmor audit, via a GitHub App, like safe-settings.
 # Runs on schedule, weekly, plus workflow_dispatch, in admin repo only.
 # No per-repo workflow file needed, for coverage, script lists org repos dynamically.
-# App does not exist yet, see PR body, for creation steps, vars, and secrets.
-# Until App exists, this workflow will fail at App token creation, by design, do not merge before App exists.
-# After App exists, dispatch by hand, verify report, then schedule will run weekly.
+# App exists now, and it is installed org-wide.
+# Token creation uses client-id, not app-id, to avoid the deprecation warning.
+# Schedule runs weekly, and manual dispatch also works.
 # Audit mode first: script exits 0, even with findings, report only, no SARIF upload yet.
 # SARIF upload needs security-events write, in App permissions, and script upload mode, in a separate PR.
 name: Zizmor central
@@ -28,7 +28,7 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          app-id: ${{ vars.ZIZMOR_APP_ID }}
+          client-id: ${{ vars.ZIZMOR_GITHUB_CLIENT_ID }}
           private-key: ${{ secrets.ZIZMOR_PRIVATE_KEY }}
           owner: infralicious
           permission-contents: read

@@ -23,3 +23,7 @@ jobs:
         run: python3 -m py_compile scripts/check-apps.py
       - name: Run App drift unit tests, no dependency
         run: python3 scripts/check-apps.test.py
+      - name: Check Zizmor central script compiles
+        run: python3 -m py_compile scripts/zizmor-central.py
+      - name: Run Zizmor central unit tests, no dependency
+        run: python3 scripts/zizmor-central.test.py

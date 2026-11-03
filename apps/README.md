@@ -55,6 +55,8 @@ Submit this manifest in the GitHub App creation flow.
 Use an org owner account, and keep the App private.
 Install the App on all org repos, after creation.
 Set admin var ZIZMOR_APP_ID, after creation.
+Set admin var ZIZMOR_GITHUB_CLIENT_ID, after creation.
+Workflow uses client-id, not app-id, for the token step.
 Set admin secret ZIZMOR_PRIVATE_KEY, by secure entry only.
 Never put the private key in chat, in a file, or in memory.
 Do not merge PR 49 before the App, the var, and the secret exist.
