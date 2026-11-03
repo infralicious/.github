@@ -1,0 +1,46 @@
+# Central zizmor audit, via a GitHub App, like safe-settings.
+# Runs on schedule, weekly, plus workflow_dispatch, in admin repo only.
+# No per-repo workflow file needed, for coverage, script lists org repos dynamically.
+# App does not exist yet, see PR body, for creation steps, vars, and secrets.
+# Until App exists, this workflow will fail at App token creation, by design, do not merge before App exists.
+# After App exists, dispatch by hand, verify report, then schedule will run weekly.
+# Audit mode first: script exits 0, even with findings, report only, no SARIF upload yet.
+# SARIF upload needs security-events write, in App permissions, and script upload mode, in a separate PR.
+name: Zizmor central
+on:
+  schedule:
+    - cron: "0 2 * * 0"
+  workflow_dispatch:
+concurrency:
+  group: zizmor-central
+  cancel-in-progress: false
+jobs:
+  zizmorCentral:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Create App token, for all org repos
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          app-id: ${{ vars.ZIZMOR_APP_ID }}
+          private-key: ${{ secrets.ZIZMOR_PRIVATE_KEY }}
+          owner: infralicious
+          permission-contents: read
+          permission-metadata: read
+          permission-security-events: write
+      - name: Download zizmor binary, version pinned
+        run: |
+          curl -sL https://github.com/zizmorcore/zizmor/releases/download/v1.31.1/zizmor-x86_64-unknown-linux-gnu.tar.gz -o /tmp/zizmor.tar.gz
+          tar -xzf /tmp/zizmor.tar.gz -C /tmp
+          chmod +x /tmp/zizmor
+          /tmp/zizmor --version
+      - name: Run central zizmor audit, report only
+        run: python3 scripts/zizmor-central.py
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          ZIZMOR_BIN: /tmp/zizmor
