@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+# Reusable zizmor workflow, central logic, per-repo caller.
+# Call from a target repo, with a tiny caller workflow, see docs.
+# This workflow runs in the caller repo context, not in admin repo.
+# That context matters: it can be a required check in that repo ruleset.
+# It can upload SARIF to that repo Security tab, with security-events write.
+# Central logic means one version to update, here, not in each repo.
+# Caller repos today: admin, site, actions-checkout, template.
+# Audit mode first: zizmor-action with min-severity medium, no fail on findings yet.
+# SARIF upload is on, so findings appear in Security tab, without blocking merges yet.
+# To make zizmor blocking later, set min-severity and fail, in a separate PR, with a ruleset update.
+name: Zizmor reusable
+on:
+  workflow_call:
+jobs:
+  zizmor:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Run zizmor
+        uses: zizmorcore/zizmor-action@53290badfa369cb0bf7ad16342cb62c2fa47ac7b # v0.8.0
+        with:
+          min-severity: medium
+          # No fail-on-findings input set here, audit mode first, SARIF upload still runs.
+          # Zizmor action uploads SARIF by default, when security-events write is set.

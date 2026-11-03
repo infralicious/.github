@@ -1,0 +1,12 @@
+# Caller for admin repo, uses local reusable workflow, same repo.
+# Runs on PR to main, audit mode first, SARIF upload, no fail yet.
+name: Zizmor
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  zizmor:
+    uses: ./.github/workflows/zizmor-reusable.yml
+    permissions:
+      contents: read
+      security-events: write
