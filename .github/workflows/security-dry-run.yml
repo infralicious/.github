@@ -2,6 +2,8 @@ name: Security Dry Run
 on:
   pull_request:
     branches: [main]
+permissions:
+  contents: read
 jobs:
   securityDryRun:
     runs-on: ubuntu-latest

@@ -2,6 +2,8 @@ name: Schema Discovery
 on:
   pull_request:
     branches: [main]
+permissions:
+  contents: read
 jobs:
   schemaDiscovery:
     runs-on: ubuntu-latest
