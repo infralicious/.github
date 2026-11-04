@@ -8,8 +8,21 @@ Usage, CI, with an App private key:
   APP_ID=<id> APP_PRIVATE_KEY=<key> python3 scripts/check-apps.py --mode jwt \
     --manifest apps/infralicious-safe-settings.json
 
+Usage, CI, with one key per App, for every manifest:
+  SAFE_SETTINGS_APP_ID=<id> SAFE_SETTINGS_PRIVATE_KEY=<key> \
+  ZIZMOR_APP_ID=<id> ZIZMOR_PRIVATE_KEY=<key> \
+  python3 scripts/check-apps.py --mode jwt-all
+
 App mode reads every JSON file in the apps directory.
 JWT mode reads one manifest file, for the App that owns the key.
+JWT-all mode reads every manifest file, and checks each App with its own key.
+JWT-all mode derives env names from the App slug, by naming convention.
+Example: infralicious-safe-settings uses SAFE_SETTINGS_APP_ID and SAFE_SETTINGS_PRIVATE_KEY.
+Example: infralicious-zizmor uses ZIZMOR_APP_ID and ZIZMOR_PRIVATE_KEY.
+JWT-all mode skips an App when its key env vars are missing, it does not fail.
+Skipped Apps are listed in the summary, so a missing key is visible, not silent.
+Secrets are not enumerable in CI, so the workflow must pass each key explicitly.
+A new App is discovered automatically, but drift checks it only after its key is wired.
 Both modes fetch live permissions, and compare them to the manifest.
 Both modes compare live events to default_events, when events exist.
 The check never applies a change, it only reports drift.
@@ -170,14 +183,24 @@ def check_app_mode(path, api_base, token):
     return compare_live(slug, expected_permissions, expected_events, live)
 
 
-def check_jwt_mode(path, api_base):
+def derive_prefix(slug):
+    """Derive env prefix from App slug, by naming convention."""
+    prefix = slug.upper().replace("-", "_")
+    if prefix.startswith("INFRALICIOUS_"):
+        prefix = prefix[len("INFRALICIOUS_"):]
+    return prefix
+
+
+def check_jwt_mode(path, api_base, app_id=None, private_key=None):
     """Check one manifest, with a JWT from its own private key."""
     loaded = load_manifest(path)
     if loaded is None:
         return False
     slug, expected_permissions, expected_events = loaded
-    app_id = os.environ.get("APP_ID")
-    private_key = os.environ.get("APP_PRIVATE_KEY")
+    if app_id is None:
+        app_id = os.environ.get("APP_ID")
+    if private_key is None:
+        private_key = os.environ.get("APP_PRIVATE_KEY")
     if not app_id or not private_key:
         print("FAIL: APP_ID and APP_PRIVATE_KEY are both required in JWT mode")
         return False
@@ -203,19 +226,59 @@ def check_jwt_mode(path, api_base):
     return compare_live(slug, expected_permissions, expected_events, live)
 
 
+def check_jwt_all(apps_dir, api_base):
+    """Check every manifest, with its own key, skip Apps with no key."""
+    try:
+        names = sorted(path for path in os.listdir(apps_dir) if path.endswith(".json"))
+    except OSError as error:
+        print(f"FAIL: cannot list {apps_dir}: {error}")
+        return 1
+    if not names:
+        print(f"FAIL: no manifest files in {apps_dir}")
+        return 1
+    checked = 0
+    skipped = []
+    failed = False
+    for name in names:
+        path = os.path.join(apps_dir, name)
+        loaded = load_manifest(path)
+        if loaded is None:
+            failed = True
+            continue
+        slug = loaded[0]
+        prefix = derive_prefix(slug)
+        app_id = os.environ.get(f"{prefix}_APP_ID")
+        private_key = os.environ.get(f"{prefix}_PRIVATE_KEY")
+        if not app_id or not private_key:
+            print(f"SKIP: {slug} has no {prefix}_APP_ID or {prefix}_PRIVATE_KEY in env")
+            skipped.append(slug)
+            continue
+        checked += 1
+        if not check_jwt_mode(path, api_base, app_id=app_id, private_key=private_key):
+            failed = True
+    print(f"JWT-all done: {checked} checked, {len(skipped)} skipped")
+    if skipped:
+        print(f"Skipped Apps, key not wired: {', '.join(skipped)}")
+    if failed:
+        print("Drift found. Fix the live App, or fix the manifest, then re-run.")
+        return 1
+    print(f"All {checked} checked Apps match their manifests.")
+    return 0
+
+
 def main():
-    """Run the drift check, in app mode or in JWT mode."""
+    """Run the drift check, in app mode, JWT mode, or JWT-all mode."""
     parser = argparse.ArgumentParser(description="Check GitHub App drift.")
     parser.add_argument(
         "--mode",
-        choices=["app", "jwt"],
+        choices=["app", "jwt", "jwt-all"],
         default="app",
-        help="app: user token, by slug. jwt: App private key, own App only.",
+        help="app: user token, by slug. jwt: App private key, own App only. jwt-all: every manifest, own key each.",
     )
     parser.add_argument(
         "--apps-dir",
         default=os.path.join(ROOT, "apps"),
-        help="Directory with App manifest JSON files, app mode only.",
+        help="Directory with App manifest JSON files, app mode and jwt-all mode.",
     )
     parser.add_argument(
         "--manifest",
@@ -228,6 +291,8 @@ def main():
         help="GitHub API base URL.",
     )
     args = parser.parse_args()
+    if args.mode == "jwt-all":
+        return check_jwt_all(args.apps_dir, args.api_base)
     if args.mode == "jwt":
         if not args.manifest:
             print("FAIL: --manifest is required in JWT mode")

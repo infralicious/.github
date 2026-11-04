@@ -1,3 +1,9 @@
+# App Drift Check, for every manifest in apps, by JWT-all mode.
+# Script discovers new manifests automatically, in apps directory.
+# Workflow must pass each App key explicitly, secrets are not enumerable.
+# Add a new App key here, with its App ID var and private key secret.
+# Use naming convention from script header, or drift will skip that App.
+# Skip is not a fail, but skip list is visible in run summary.
 name: App Drift Check
 on:
   pull_request:
@@ -17,10 +23,12 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Check safe-settings App against its manifest
-        run: >-
-          python3 scripts/check-apps.py --mode jwt
-          --manifest apps/infralicious-safe-settings.json
+        with:
+          persist-credentials: false
+      - name: Check every App against its manifest, JWT-all mode
+        run: python3 scripts/check-apps.py --mode jwt-all
         env:
-          APP_ID: ${{ vars.SAFE_SETTINGS_APP_ID }}
-          APP_PRIVATE_KEY: ${{ secrets.SAFE_SETTINGS_PRIVATE_KEY }}
+          SAFE_SETTINGS_APP_ID: ${{ vars.SAFE_SETTINGS_APP_ID }}
+          SAFE_SETTINGS_PRIVATE_KEY: ${{ secrets.SAFE_SETTINGS_PRIVATE_KEY }}
+          ZIZMOR_APP_ID: ${{ vars.ZIZMOR_APP_ID }}
+          ZIZMOR_PRIVATE_KEY: ${{ secrets.ZIZMOR_PRIVATE_KEY }}

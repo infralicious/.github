@@ -27,3 +27,9 @@ jobs:
         run: python3 -m py_compile scripts/zizmor-central.py
       - name: Run Zizmor central unit tests, no dependency
         run: python3 scripts/zizmor-central.test.py
+      - name: Check Manifest linter compiles
+        run: python3 -m py_compile scripts/check-manifests.py
+      - name: Run Manifest linter unit tests, no dependency
+        run: python3 scripts/check-manifests.test.py
+      - name: Lint every App manifest, no dependency
+        run: python3 scripts/check-manifests.py
