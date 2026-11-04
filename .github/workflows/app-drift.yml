@@ -32,3 +32,5 @@ jobs:
           SAFE_SETTINGS_PRIVATE_KEY: ${{ secrets.SAFE_SETTINGS_PRIVATE_KEY }}
           ZIZMOR_APP_ID: ${{ vars.ZIZMOR_APP_ID }}
           ZIZMOR_PRIVATE_KEY: ${{ secrets.ZIZMOR_PRIVATE_KEY }}
+          RENOVATE_APP_ID: ${{ vars.RENOVATE_APP_ID }}
+          RENOVATE_PRIVATE_KEY: ${{ secrets.RENOVATE_PRIVATE_KEY }}
