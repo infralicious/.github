@@ -83,6 +83,41 @@ GITHUB_TOKEN cannot read private Apps in CI, it returns 403.
 JWT mode uses openssl, which is present on Ubuntu runners.
 Drift check never prints a token, a key, a JWT, or a secret.
 
+## Inventory
+
+Inventory file is apps/inventory.json, one entry per installed App.
+Inventory covers org installations only, not repo-only installs.
+Repo-only installs need App JWT to list, and third-party keys are not here.
+Inventory codifies every App installed on the org account.
+Inventory codifies scope, so scope is visible in code, not only in UI.
+Scope org means all repos, with repository_selection all.
+Scope selected means listed repos, with repository_selection selected.
+Scope repo means one repo, with repository_selection selected and one repo listed.
+Today, all six Apps use scope org, with all repos.
+Inventory permissions are granted installation permissions, not requested App permissions.
+Socket install grants no emails read, but App page lists emails read.
+Inventory records granted permissions only, for socket, to match live install.
+For owned Apps, inventory permissions must match manifest permissions.
+For third-party Apps, inventory permissions are live granted permissions at codification time.
+Inventory check script is scripts/check-app-inventory.py, with no dependency.
+Inventory check runs locally with GITHUB_TOKEN, org owner token.
+Inventory check runs in CI, in app-inventory workflow, on pull request and dispatch.
+Inventory check runs in CI, on business days, Monday to Friday at 09:00 UTC.
+Inventory check is advisory, not a required check, like appDrift.
+Inventory check fails on unknown App, missing App, scope mismatch, or permission mismatch.
+Inventory check fails on event mismatch, and on manifest mismatch for owned Apps.
+Inventory check warns on installation_id mismatch, reinstall may explain it.
+Inventory check skips, it does not fail, when token cannot list installations.
+Workflow token in CI may return 403, local run with org owner token is authoritative.
+Safe-settings sync does not revert App installs, so inventory check is needed.
+App installs persist until a human uninstalls them in UI.
+A new App install will not be reverted by sync, so it must be flagged by inventory check.
+To flag a new App, run inventory check locally, with org owner token.
+Review new App purpose, scope, permissions, and events, before codifying it.
+Add new App to inventory in a pull request, with purpose and scope.
+Do not auto-add a new App to inventory, human review must come first.
+Inventory tests are in scripts/check-app-inventory.test.py.
+
 ## Lint
 
 GitHub has no official manifest linter, so this repo has its own linter.
@@ -116,6 +151,7 @@ Install the App on all org repos, after creation, if that scope fits.
 Set admin vars, with naming convention, after creation.
 Set admin secret for private key, by secure entry only.
 Add App ID var and private key secret to app-drift workflow.
+Add App to inventory, with scope, permissions, events, and purpose, in the same pull request.
 Update this README, with new App notes, in the same pull request.
 Do not copy App IDs, keys, or secrets from another App.
 Do not put a secret in chat, in a file, or in memory.
@@ -123,6 +159,7 @@ Do not put a secret in chat, in a file, or in memory.
 ## Remove an App
 
 Delete the manifest file, in a pull request.
+Remove App from inventory, in the same pull request.
 Remove App vars and secrets from admin repo settings.
 Uninstall the App from the org, after its workflows stop using it.
 Remove drift workflow env for that App, in the same pull request.
@@ -130,14 +167,20 @@ Update this README, with removal notes, in the same pull request.
 
 ## Current Apps
 
-All three Apps exist today, and all are installed org-wide.
-All three Apps use all repos, current and future org repos.
-All three Apps are private, with no webhook events.
-All three manifests match live permissions and events, as of 2026-11-03 manual check.
+All six installed Apps exist today, and all are installed org-wide.
+All six Apps use all repos, current and future org repos.
+Three Apps are owned by infralicious, with manifests in this folder.
+Three Apps are third-party, with inventory entries only, no manifests here.
+Third-party Apps have no manifest in this folder, because vendor owns them.
+All three owned manifests match live permissions and events, as of 2026-11-03 manual check.
+All six inventory entries match live installations, as of 2026-11-03 manual check.
 
 - infralicious-safe-settings: administration write, contents read, issues write, metadata read, pull_requests write.
 - infralicious-renovate: contents write, issues write, metadata read, pull_requests write, vulnerability_alerts read, workflows write.
 - infralicious-zizmor: contents read, metadata read, security_events write.
+- semantic-pull-requests: metadata read, pull_requests write, single_file read, statuses write, org-wide.
+- socket-security: checks write, contents write, issues read, members read, merge_queues read, metadata read, pull_requests write, org-wide.
+- coderabbitai: actions read, checks write, contents write, discussions read, issues write, members read, merge_queues read, metadata read, pull_requests write, statuses write, workflows write, org-wide.
 - infralicious-zizmor: App ID 5597126, install is org-wide, var and secret exist in admin repo.
 - infralicious-zizmor: workflow uses client-id, not app-id, for the token step.
 - infralicious-zizmor: manifest omits hook_attributes, so webhook stays inactive by omission.
