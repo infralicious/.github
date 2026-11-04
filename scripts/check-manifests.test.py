@@ -92,6 +92,18 @@ class TestLintManifest(unittest.TestCase):
         issues = lint_dict(good_manifest(), filename="infralicious-other.json")
         self.assertIn("E15", codes(issues))
 
+    def test_inventory_file_is_skipped(self):
+        """Inventory file is skipped, inventory is not a manifest."""
+        with tempfile.TemporaryDirectory() as tmp:
+            good_path = os.path.join(tmp, "infralicious-test.json")
+            with open(good_path, "w", encoding="utf-8") as handle:
+                json.dump(good_manifest(), handle)
+            inv_path = os.path.join(tmp, "inventory.json")
+            with open(inv_path, "w", encoding="utf-8") as handle:
+                json.dump({"org": "infralicious", "apps": []}, handle)
+            result = MODULE.main(["--apps-dir", tmp])
+            self.assertEqual(result, 0)
+
 
 if __name__ == "__main__":
     unittest.main()

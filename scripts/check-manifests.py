@@ -30,6 +30,8 @@ GitHub has no official manifest linter, so this script is the linter.
 GitHub requires hook_attributes url when hook_attributes is present.
 GitHub rejects a manifest with hook_attributes active false and no url.
 Action Apps in this org use no webhook, so omit hook_attributes.
+Linter skips inventory.json, inventory is not a manifest.
+Inventory is checked by check-app-inventory.py, not by this linter.
 """
 import json
 import os
@@ -176,7 +178,7 @@ def main(argv=None):
             print("Usage: python3 scripts/check-manifests.py [--apps-dir apps] [--fail-on-warning]")
             return 0
     try:
-        names = sorted(path for path in os.listdir(apps_dir) if path.endswith(".json"))
+        names = sorted(path for path in os.listdir(apps_dir) if path.endswith(".json") and path != "inventory.json")
     except OSError as error:
         print(f"ERROR: cannot list {apps_dir}: {error}")
         return 1

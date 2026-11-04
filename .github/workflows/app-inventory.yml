@@ -1,0 +1,32 @@
+# App Inventory Check, for every org App installation.
+# Check compares live org installations to apps/inventory.json.
+# Check fails on unknown App, missing App, scope mismatch, or permission mismatch.
+# Check skips, it does not fail, when token cannot list installations.
+# Workflow token in CI may return 403, local run with org owner token is authoritative.
+# This check is advisory, not a required check, like appDrift.
+# Safe-settings sync does not revert App installs, so inventory check is needed.
+name: App Inventory Check
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Run on business days, Monday to Friday at 09:00 UTC.
+    # That time catches a new App install, with no inventory change.
+    - cron: "0 9 * * 1-5"
+permissions:
+  contents: read
+jobs:
+  appInventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check org App installations against inventory
+        run: python3 scripts/check-app-inventory.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

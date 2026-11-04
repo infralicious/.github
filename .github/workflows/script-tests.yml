@@ -33,3 +33,7 @@ jobs:
         run: python3 scripts/check-manifests.test.py
       - name: Lint every App manifest, no dependency
         run: python3 scripts/check-manifests.py
+      - name: Check App inventory script compiles
+        run: python3 -m py_compile scripts/check-app-inventory.py
+      - name: Run App inventory unit tests, no dependency
+        run: python3 scripts/check-app-inventory.test.py

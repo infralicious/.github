@@ -23,6 +23,8 @@ JWT-all mode skips an App when its key env vars are missing, it does not fail.
 Skipped Apps are listed in the summary, so a missing key is visible, not silent.
 Secrets are not enumerable in CI, so the workflow must pass each key explicitly.
 A new App is discovered automatically, but drift checks it only after its key is wired.
+Both modes skip inventory.json, inventory is not a manifest.
+Inventory is checked by check-app-inventory.py, not by drift check.
 Both modes fetch live permissions, and compare them to the manifest.
 Both modes compare live events to default_events, when events exist.
 The check never applies a change, it only reports drift.
@@ -229,7 +231,7 @@ def check_jwt_mode(path, api_base, app_id=None, private_key=None):
 def check_jwt_all(apps_dir, api_base):
     """Check every manifest, with its own key, skip Apps with no key."""
     try:
-        names = sorted(path for path in os.listdir(apps_dir) if path.endswith(".json"))
+        names = sorted(path for path in os.listdir(apps_dir) if path.endswith(".json") and path != "inventory.json")
     except OSError as error:
         print(f"FAIL: cannot list {apps_dir}: {error}")
         return 1
@@ -309,7 +311,7 @@ def main():
         return 1
     try:
         paths = sorted(
-            path for path in os.listdir(args.apps_dir) if path.endswith(".json")
+            path for path in os.listdir(args.apps_dir) if path.endswith(".json") and path != "inventory.json"
         )
     except OSError as error:
         print(f"FAIL: cannot list {args.apps_dir}: {error}")
